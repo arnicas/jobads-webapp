@@ -1,0 +1,7 @@
+.idea
+.DS_Store
+node_modules
+wiki
+public
+npm-debug.log
+jsconfig.json
