@@ -1,0 +1,13 @@
+@import 'colors';
+
+body {
+    margin: 0 0 0 256px;
+}
+
+.menuAppBar {
+    background-color: $gris600 !important;
+
+    h1 {
+        color: white !important;
+    }
+}

@@ -31,5 +31,5 @@ npm start
 ## Build and deploy
 
 You can build the React app running `gulp build`.
-Flow is optimized by automatically deploying to staging using GitHub integratiopn on Heroku.
-"For example whenever the master branch is updated on GitHub and continuous integration (CI) tests pass, staging can be auto-deployed."[Learn more](https://devcenter.heroku.com/articles/pipelines#github-sync)
+Flow is optimized by automatically deploying to staging using GitHub integration on Heroku.
+"For example whenever the master branch is updated on GitHub and continuous integration (CI) tests pass, staging can be auto-deployed." [Learn more](https://devcenter.heroku.com/articles/pipelines#github-sync)
