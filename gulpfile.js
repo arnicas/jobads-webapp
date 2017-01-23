@@ -20,7 +20,7 @@ var path = {
     IMAGES: 'src/images/**/*',
     VENDORS: 'src/vendors/**/*',
     MINIFIED_OUT: 'build.min.js',
-    MINIFIED_CSS_OUT: 'style.min.js',
+    MINIFIED_CSS_OUT: 'style.min.css',
     OUT: 'build.js',
     DEST: 'public',
     DEST_BUILD: 'public/src',
