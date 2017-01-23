@@ -11,6 +11,7 @@ var streamify = require('gulp-streamify');
 var babelify = require('babelify');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
+var rename = require('gulp-rename');
 
 // Paths and filenames
 var path = {
@@ -45,7 +46,7 @@ gulp.task('sass', function () {
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest(path.DEST));
+    .pipe(gulp.dest(path.DEST_SRC));
 });
 
 // Watch for any change
@@ -78,7 +79,8 @@ gulp.task('watch', function() {
 gulp.task('build', function(){
     gulp.src(path.SCSS)
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-        .pipe(gulp.dest(path.MINIFIED_CSS_OUT));
+        .pipe(rename(path.MINIFIED_CSS_OUT))
+        .pipe(gulp.dest(path.DEST_BUILD));
     browserify({
         entries: [path.ENTRY_POINT],
         transform: [babelify, reactify],
@@ -94,8 +96,11 @@ gulp.task('build', function(){
 gulp.task('replaceHTML', function(){
     gulp.src(path.HTML)
         .pipe(htmlreplace({
-            'js': 'build/' + path.MINIFIED_OUT,
-            'css': path.MINIFIED_CSS_OUT
+            'css': {
+                src : 'src/' + path.MINIFIED_CSS_OUT,
+                tpl: '<link type="text/css" rel="stylesheet" href="%s"  media="all"/>'
+            },
+            'js': 'src/' + path.MINIFIED_OUT
         }))
         .pipe(gulp.dest(path.DEST));
 });
