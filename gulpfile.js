@@ -16,7 +16,8 @@ var rename = require('gulp-rename');
 // Paths and filenames
 var path = {
     HTML: 'src/*.html',
-    SCSS: 'src/sass/style.scss',
+    SCSS: 'src/sass/**/*.scss',
+    SCSS_OUT: 'src/sass/style.scss',
     IMAGES: 'src/images/**/*',
     VENDORS: 'src/vendors/**/*',
     MINIFIED_OUT: 'build.min.js',
@@ -42,7 +43,7 @@ gulp.task('copy', function(){
 
 // Build css style
 gulp.task('sass', function () {
-  return gulp.src(path.SCSS)
+  return gulp.src(path.SCSS_OUT)
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(sourcemaps.write())

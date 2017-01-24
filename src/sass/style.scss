@@ -1,13 +1,51 @@
 @import 'colors';
+@import 'utils';
+@import 'analyse';
+
+* {
+    font-family: Roboto, Arial, sans-serif;
+}
+
+html {
+    @include gradient-directional($violet300, $orange500);
+    height: 100vh;
+}
 
 body {
     margin: 0 0 0 256px;
 }
 
+#jobads-webapp {
+    height: 100vh;
+}
+
 .menuAppBar {
-    background-color: $gris600 !important;
+    background-color: rgb(48, 48, 48) !important;
+
+    img {
+        position: relative;
+        top: 9px;
+    }
 
     h1 {
         color: white !important;
     }
+
+    svg {
+        fill: $gris400 !important;
+    }
+}
+
+.badge {
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 4px;
+    background: $vertA200;
+    border-radius: 3px;
+    color: white;
+}
+
+.test {
+    min-width: 100px;
+    min-height: 300px;
 }

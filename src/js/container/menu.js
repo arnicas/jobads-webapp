@@ -5,10 +5,13 @@ import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import MenuItem from 'material-ui/MenuItem';
 import {primary700, accentA200, accentA400, accentA100} from '../colors';
+import IconButton from 'material-ui/IconButton';
+import Subheader from 'material-ui/Subheader';
 
 // Icons
 import ActionSearch from 'material-ui/svg-icons/action/search';
 import ActionAssessment from 'material-ui/svg-icons/action/assessment';
+import ActionClose from 'material-ui/svg-icons/content/clear';
 
 var _colors = require('material-ui/styles/colors');
 
@@ -46,9 +49,10 @@ export default class Menu extends React.Component {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <Drawer open={this.state.open}>
-            <AppBar title="JobAds Miner" showMenuIconButton={false} className="menuAppBar"/>
+            <AppBar title={<img height="36" src="images/logo.png"/>} showMenuIconButton={false} className="menuAppBar" zDepth={0} iconElementRight={<IconButton><ActionClose/></IconButton>}/>
             <MenuItem href="#/rechercher" primaryText="Rechercher" leftIcon={<ActionSearch />}/>
             <MenuItem href="#/analyser" primaryText="Analyse de CV" leftIcon={<ActionAssessment />}/>
+            <Subheader>PRODUIT</Subheader>
             <MenuItem href="#/a-propos" primaryText="A propos"/>
         </Drawer>
       </MuiThemeProvider>
