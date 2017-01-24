@@ -1,0 +1,11 @@
+.resultScreen {
+    background: white;
+    min-height: 100vh;
+    padding-top: 20px;
+
+    .searchResultBar {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+    }
+}
