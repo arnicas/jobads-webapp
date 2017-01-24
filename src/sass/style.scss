@@ -1,6 +1,9 @@
 @import 'colors';
+@import 'measures';
+@import 'typo';
 @import 'utils';
-@import 'analyse';
+@import 'analyse/index';
+@import 'components/index';
 
 * {
     font-family: Roboto, Arial, sans-serif;
@@ -9,6 +12,7 @@
 html {
     @include gradient-directional($violet300, $orange500);
     height: 100vh;
+    background-attachment: fixed;
 }
 
 body {
@@ -48,4 +52,9 @@ body {
 .test {
     min-width: 100px;
     min-height: 300px;
+}
+
+.testScreen {
+    min-height: 100vh;
+    @include gradient-vertical(white, $gris50);
 }

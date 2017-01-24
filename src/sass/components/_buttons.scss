@@ -1,0 +1,14 @@
+.flatButton {
+    margin-top: 20px !important;
+    margin-right: 16px;
+    color: #FFFFFF !important;
+    border: 1px solid white !important;
+}
+
+.accentButton {
+    margin-top: 20px !important;
+    margin-right: 16px;
+    span {
+        color: $vertA400 !important;
+    }
+}
