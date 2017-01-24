@@ -78,7 +78,7 @@ gulp.task('watch', function() {
 
 // Build the React App
 gulp.task('build', function(){
-    gulp.src(path.SCSS)
+    gulp.src(path.SCSS_OUT)
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(rename(path.MINIFIED_CSS_OUT))
         .pipe(gulp.dest(path.DEST_BUILD));
