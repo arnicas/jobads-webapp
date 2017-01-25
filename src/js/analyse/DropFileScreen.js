@@ -32,6 +32,10 @@ export default class DropFileScreen extends React.Component {
         this.dropzone.open();
     }
 
+    _emptyFile = () => {
+        onDrop([],[]);
+    }
+
     render() {
         let dragAndDrop = null;
         let text = null;
@@ -46,13 +50,13 @@ export default class DropFileScreen extends React.Component {
                     <h2>L'analyse est terminée</h2>
                     <span>{"Fichier analysé : " + this.props.filename + " (" + formatOctet(this.props.size) + ")" }</span>
                     <div>
-                        <FlatButton label="Choisir un autre fichier" className="flatButton" onClick={()=>{alert("Fonction indisponible")}}/>
+                        <FlatButton label="Choisir un autre fichier" className="flatButton" onClick={this._emptyFile}/>
                     </div>
                 </div>
             );
         } else {
             dragAndDrop = (
-                <DropZone ref={(node) => { this.dropzone = node; }} onDrop={onDrop} multiple={false} accept="image/*" activeStyle={style.activeDropZone} className="dragAndDropArea">
+                <DropZone ref={(node) => { this.dropzone = node; }} onDrop={onDrop} multiple={false} accept="application/pdf" activeStyle={style.activeDropZone} className="dragAndDropArea">
                     <ActionUpload style={style.icon}/>
                     <span>Déposez ici votre CV</span>
                 </DropZone>

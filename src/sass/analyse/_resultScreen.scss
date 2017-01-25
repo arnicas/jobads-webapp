@@ -1,11 +1,78 @@
 .resultScreen {
-    background: white;
-    min-height: 100vh;
-    padding-top: 20px;
+    padding: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
 
-    .searchResultBar {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: center;
+    .firstScreen{
+        @include gradient-vertical(white, $gris25);
+        padding: 0 5vw;
+        border-bottom: 1px solid $gris100;
+
+        .searchResultBar {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+        }
+
+        .separator {
+            margin-top: 40px;
+        }
+
+        .tabs {
+            width: 200px;
+        }
+    }
+
+    .jobTable {
+        padding: 0 5vw;
+        display: table;
+        border-spacing: 16px;
+        border-collapse: separate;
+        background: white;
+
+        .jobRow {
+            display: table-row;
+
+            .jobCell {
+                display: table-cell;
+                vertical-align: top;
+                font-size: .8em;
+
+                &.jobAvatar {
+                    padding-left: 16px;
+
+                    img {
+                        vertical-align: top;
+                    }
+                }
+
+                &.jobDescription {
+                    h3 {
+                        font-size: 12px !important;
+                        color: $gris400;
+                        margin: 3px 0 3px 0;
+                    }
+                    h4 {
+                        font-size: 15px !important;
+                        color: $gris900;
+                        margin: 3px 0 3px 0;
+                        font-weight: 400;
+                    }
+                    p{
+                        color: $gris800;
+                        max-width: 60vw;
+                    }
+                }
+
+                &.jobMatchScore {
+                    min-width: 48px;
+                }
+
+                &.jobType {
+                    min-width: 88px;
+                }
+            }
+        }
     }
 }
