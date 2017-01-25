@@ -20,10 +20,17 @@ export default class Analyse extends React.Component {
         onDrop = (acceptedFiles, rejectedFiles) => {
             console.log('Accepted files: ', acceptedFiles);
             console.log('Rejected files: ', rejectedFiles);
-            this.setState({
-                file: acceptedFiles,
-                hasFile: true
-            });
+            if (acceptedFiles.length == 1) {
+                this.setState({
+                    file: acceptedFiles,
+                    hasFile: true
+                });
+            } else {
+                this.setState({
+                    file: [],
+                    hasFile: false
+                });
+            }
         }
     }
 

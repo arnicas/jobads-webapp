@@ -49,6 +49,40 @@ body {
     color: white;
 }
 
+span.indicator {
+
+    &::before {
+        content: "";
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border-radius: 3px;
+        position: relative;
+        bottom: 3px;
+        right: 3px;
+    }
+
+    &.worse::before {
+        background: $deepOrange500;
+    }
+
+    &.bad::before {
+        background: $amber500;
+    }
+
+    &.medium::before {
+        background: $yellow500;
+    }
+
+    &.good::before {
+        background: $vertA200;
+    }
+
+    &.best::before {
+        background: $vertA400;
+    }
+}
+
 .test {
     min-width: 100px;
     min-height: 300px;

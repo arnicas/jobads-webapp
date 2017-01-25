@@ -8,7 +8,7 @@
 
     &::after{
         content: "";
-        transition: .3s cubic-bezier(0.455, 0.03, 0.515, 0.955);  
+        transition: none;  
         position: absolute;
         display: block;
         width: 0;
@@ -22,6 +22,7 @@
     }
 
     &.active::after {
+        transition: .3s cubic-bezier(0.455, 0.03, 0.515, 0.955); 
         bottom: 0;
     }
 }
