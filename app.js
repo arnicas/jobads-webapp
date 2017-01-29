@@ -7,7 +7,7 @@ var app = express();
 app.use(bodyParser.json());
 
 app.use(express.static('public'));
-// app.use('/api', require('./api'));
+app.use('/api', require('./api/api'));
 
 let serverPort = process.env.PORT || 8080;
 app.listen(serverPort, function () {

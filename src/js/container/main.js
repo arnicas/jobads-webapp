@@ -4,7 +4,7 @@ import {grey600, grey400, green500, orange500, green700} from 'material-ui/style
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
-import Menu from './menu';
+import Menu from './Menu';
 import {primary500, primary700, accentA200} from '../colors';
 import ScrollSpy from './ScrollSpy';
 
