@@ -1,5 +1,6 @@
 @import 'colors';
 @import 'measures';
+@import 'visibility';
 @import 'typo';
 @import 'utils';
 @import 'analyse/index';
@@ -11,33 +12,15 @@
 
 html {
     @include gradient-directional($violet300, $orange500);
-    height: 100vh;
     background-attachment: fixed;
 }
 
 body {
-    margin: 0 0 0 256px;
+    margin: 0;
 }
 
 #jobads-webapp {
     height: 100vh;
-}
-
-.menuAppBar {
-    background-color: rgb(48, 48, 48) !important;
-
-    img {
-        position: relative;
-        top: 9px;
-    }
-
-    h1 {
-        color: white !important;
-    }
-
-    svg {
-        fill: $gris400 !important;
-    }
 }
 
 .badge {

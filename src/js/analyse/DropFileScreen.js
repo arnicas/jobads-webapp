@@ -41,7 +41,7 @@ export default class DropFileScreen extends React.Component {
         let text = null;
         if (this.props.hasFile) {
             dragAndDrop = (
-                <DropZone className="dragAndDropArea active" disableClick={true}>
+                <DropZone className="dragAndDropArea active hidden-xs" disableClick={true}>
                     <ActionDoc style={style.icon}/>
                 </DropZone>
             );
@@ -56,7 +56,7 @@ export default class DropFileScreen extends React.Component {
             );
         } else {
             dragAndDrop = (
-                <DropZone ref={(node) => { this.dropzone = node; }} onDrop={onDrop} multiple={false} accept="application/pdf" activeStyle={style.activeDropZone} className="dragAndDropArea">
+                <DropZone ref={(node) => { this.dropzone = node; }} onDrop={onDrop} multiple={false} accept="application/pdf" activeStyle={style.activeDropZone} className="dragAndDropArea hidden-xs">
                     <ActionUpload style={style.icon}/>
                     <span>Déposez ici votre CV</span>
                 </DropZone>

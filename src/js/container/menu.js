@@ -1,61 +1,197 @@
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import {greenA400, grey500, grey300} from 'material-ui/styles/colors';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import MenuItem from 'material-ui/MenuItem';
 import {primary700, accentA200, accentA400, accentA100} from '../colors';
 import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
+import {Tabs, Tab} from 'material-ui/Tabs';
+import SelectField from 'material-ui/SelectField';
+import { hashHistory } from 'react-router';
+import LogoIcon from './Logo';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import Help from 'material-ui/svg-icons/communication/live-help';
 
-// Icons
-import ActionSearch from 'material-ui/svg-icons/action/search';
-import ActionAssessment from 'material-ui/svg-icons/action/assessment';
-import ActionClose from 'material-ui/svg-icons/content/clear';
-
-var _colors = require('material-ui/styles/colors');
-
-var _colorManipulator = require('material-ui/utils/colorManipulator');
-
-const muiTheme = getMuiTheme({
-  fontFamily: 'Roboto, sans-serif',
-  palette: {
-    primary1Color: primary700,
-    primary2Color: primary700,
-    accent1Color: accentA200,
-    accent2Color: accentA400,
-    accent3Color: accentA100,
-    textColor: _colors.fullWhite,
-    secondaryTextColor: (0, _colorManipulator.fade)(_colors.fullWhite, 0.7),
-    alternateTextColor: '#303030',
-    canvasColor: '#303030',
-    borderColor: (0, _colorManipulator.fade)(_colors.fullWhite, 0.3),
-    disabledColor: (0, _colorManipulator.fade)(_colors.fullWhite, 0.3),
-    pickerHeaderColor: (0, _colorManipulator.fade)(_colors.fullWhite, 0.12),
-    clockCircleColor: (0, _colorManipulator.fade)(_colors.fullWhite, 0.12)
+const styles = {
+  tabItemContainer : {
+    background: 'none'
+  },
+  selectField: {
+    alignSelf: 'center',
+    marginLeft: 25,
+    marginRight: 25,
+  },
+  separator: {
+    flex: "1 1 0",
+  },
+  menuStyle: {
+    color: "white",
+    lineHeight: "32px",
+    paddingLeft: 8,
+    paddingRight: 8,
+    borderRadius: 5,
+    marginTop: 10,
+    marginBottom: 10,
+    border: "2px solid white"
+  },
+  menuStyleScrolled: {
+    color: grey500,
+    lineHeight: "32px",
+    paddingLeft: 8,
+    paddingRight: 8,
+    borderRadius: 5,
+    marginTop: 11,
+    marginBottom: 11,
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: grey300
+  },
+  titleStyle : {
+    flex: "0 0 auto",
+  },
+  underline: {
+    display: 'none'
+  },
+  selectedMenuItem: {
+    color: greenA400
+  },
+  tabTemplate: {
+    
+  },
+  tabTemplateScrolled: {
+    color: grey500
+  },
+  inkBar: {
+    background: greenA400
   }
-});
+};
+
+const tabs = [
+  {label: "Aide", location: "aide"},
+  {label: "A propos", location: "a-propos"},
+];
+
+let inertiaTrigger = 30;
+let appBarHeight = 64;
+let handleClose = () => {return 1;}
 
 export default class Menu extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {open: true};
+    this.state = {
+      open: false,
+      value: 'analyser',
+      altLocation: false,
+      translateY: 0
+    };
   }
 
-  handleToggle = () => this.setState({open: !this.state.open});
+  _handleTabChange = (value) => {
+    this.setState({
+      altLocation: value,
+      open: true,
+    });
+    document.body.className = (window.innerWidth < 1200) ? "body pushed" : "body pushed600";
+  };
+
+  _handleSelectFieldChange = (event, index, value) => {
+    this.setState({value});
+    hashHistory.push(value);
+  }
+
+  componentWillMount () {
+    handleClose = () => {
+      this.setState({open: false, altLocation: false});
+      document.body.className = "body";
+    }
+  }
+
+  componentWillReceiveProps(nextProps){
+    if (nextProps.inertia > inertiaTrigger || this.state.open) this.setState({translateY: 0});
+    else if (nextProps.inertia < 0 && nextProps.top > 200) {
+      this.setState({translateY: -100});
+    };
+  }
+
+  _mapTabs = () => {
+    return tabs.map((tab)=>{
+      if (this.props.isAtTop && !this.state.open) {
+        return (
+          <Tab label={tab.label} value={tab.location} key={tab.location}></Tab>
+        );
+      } else {
+        return (
+          <Tab label={tab.label} value={tab.location} key={tab.location} buttonStyle={styles.tabTemplateScrolled}></Tab>
+        );
+      }
+    });
+  }
 
   render() {
+
     return (
-      <MuiThemeProvider muiTheme={muiTheme}>
-        <Drawer open={this.state.open}>
-            <AppBar title={<img height="36" src="images/logo.png"/>} showMenuIconButton={false} className="menuAppBar" zDepth={0} iconElementRight={<IconButton><ActionClose/></IconButton>}/>
-            <MenuItem href="#/rechercher" primaryText="Rechercher" leftIcon={<ActionSearch />}/>
-            <MenuItem href="#/analyser" primaryText="Analyse de CV" leftIcon={<ActionAssessment />}/>
-            <Subheader>PRODUIT</Subheader>
-            <MenuItem href="#/a-propos" primaryText="A propos"/>
-        </Drawer>
-      </MuiThemeProvider>
+      <div>
+        <AppBar
+          title={<LogoIcon className={(this.props.isAtTop || this.state.open) ? "logoIcon atTop" : "logoIcon scrolled"}/>}
+          className={(this.props.isAtTop) ? "menuAppBar atTop" : "menuAppBar scrolled"}
+          showMenuIconButton={false}
+          zDepth={(this.props.isAtTop) ? 0 : 1}
+          titleStyle={styles.titleStyle}
+          style={{transform: "translateY("+this.state.translateY+"%)"}}
+        >
+          <SelectField
+            value={this.state.value}
+            onChange={this._handleSelectFieldChange}
+            className={this.state.open ? "menuSelect open" : "menuSelect"}
+            style={styles.selectField}
+            labelStyle={(this.props.isAtTop) ? styles.menuStyle : styles.menuStyleScrolled}
+            underlineStyle={styles.underline}
+            selectedMenuItemStyle={styles.selectedMenuItem}
+          >
+            <MenuItem value={'analyser'} primaryText="Analyse de CV" />
+            <MenuItem value={'rechercher'} primaryText="Recherche simple" />
+            <MenuItem value={'a-propos'} primaryText="A propos" />
+          </SelectField>
+          <div style={styles.separator}/>
+          <Tabs
+            value={this.state.altLocation}
+            onChange={this._handleTabChange}
+            className={(this.state.open) ? "menuTabs":"menuTabs hidden-xs"}
+            tabItemContainerStyle={styles.tabItemContainer}
+            inkBarStyle={styles.inkBar}
+          >
+            {this._mapTabs()}
+          </Tabs>
+          <IconButton
+            className={(this.state.open) ? "helpIcon open visible-xs-block":"helpIcon visible-xs-block"}
+            onClick={()=>this._handleTabChange('aide')}>
+            <Help/>
+          </IconButton>
+
+          <Drawer
+            open={this.state.open}
+            docked={false}
+            openSecondary={true}
+            width={Math.min(window.innerWidth-84,600)}
+            className="drawerContainer"
+            onRequestChange={handleClose}
+            overlayClassName="overlay"
+            disableSwipeToOpen={true}>
+              <AppBar
+                className="drawerAppBar"
+                iconElementLeft={<IconButton><NavigationClose/></IconButton>}
+                onLeftIconButtonTouchTap={handleClose}
+                style={{background: "white"}}
+                />
+          </Drawer>
+        </AppBar>
+      </div>
     );
   }
 }
+
+export {handleClose};

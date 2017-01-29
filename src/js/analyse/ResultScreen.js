@@ -127,8 +127,10 @@ export default class ResultScreen extends React.Component {
                         <Tab label="Carte" value="map" className="tab" buttonStyle={styles.tabLabel}></Tab>
                     </Tabs>
                 </div>
-                <div className="jobTable">
-                    {this._mapJobs()}
+                <div className="jobTableOutter">
+                    <div className="jobTable">
+                        {this._mapJobs()}
+                    </div>
                 </div>
             </div>
         );
