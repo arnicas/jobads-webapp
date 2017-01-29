@@ -1,14 +1,16 @@
 .analyseContainer {
     height: 100vh;
-    min-height: .5*$minScreenHeight;
+    min-height: 320px;
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
     justify-content: center;
     align-items: center;
-    transition: .6s cubic-bezier(0.455, 0.03, 0.515, 0.955) height .3s;
+    transition: .6s cubic-bezier(0.075, 0.82, 0.165, 1) height;
 
     &.active {
         height: 20vh;
+        min-height: 400px;
+        transition: .6s cubic-bezier(0.0, 0.0, 0.2, 1) height .3s;
     }
 
     .analyseTextContainer {
@@ -20,13 +22,23 @@
         color: white;
         position: relative;
         z-index: 25;
-        transition: .3s cubic-bezier(0.455, 0.03, 0.515, 0.955) margin-top .3s;
+        transition: .3s cubic-bezier(0.455, 0.03, 0.515, 0.955) margin-top;
+        min-width: 250px;
+
+        @media (max-width: $screen-xs-max) {
+            min-width: 80vw;
+
+            h2 {
+                margin-top: 3px;
+            }
+        }
 
         &.active {
             flex-grow: 1;
             margin-top: -50px;
+            transition: .3s cubic-bezier(0.455, 0.03, 0.515, 0.955) margin-top .3s;
         }
-    }   
+    }
 
     .analyseDragAndDropContainer {
         display: flex;
@@ -48,6 +60,8 @@
             min-width: 140px;
             color: $vertA200;
             transition : .3s cubic-bezier(0.455, 0.03, 0.515, 0.955) all;
+            max-width: 300px;
+            max-height: 300px;
 
             &.active {
                 width: 10vw;

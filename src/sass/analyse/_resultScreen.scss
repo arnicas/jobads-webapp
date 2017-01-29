@@ -3,6 +3,8 @@
     display: flex;
     flex-flow: column nowrap;
     align-items: stretch;
+    background: white;
+    height: 200vh;
 
     .firstScreen{
         @include gradient-vertical(white, $gris25);
@@ -22,6 +24,10 @@
         .tabs {
             width: 200px;
         }
+    }
+
+    .jobTableOutter {
+        overflow-x: auto;
     }
 
     .jobTable {

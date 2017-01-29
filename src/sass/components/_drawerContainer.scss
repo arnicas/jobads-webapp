@@ -1,0 +1,54 @@
+// body pushed
+
+body {
+    overflow: auto !important;
+    text-align: center;
+    transition: .3s cubic-bezier(0.23, 1, 0.32, 1);
+
+    &>div {
+        text-align: left;
+    }
+
+    #jobads-webapp {
+        max-width: 2000px;
+        margin: 0 auto;
+    }
+
+    &.pushed {
+        margin-left: -50vw;
+        margin-right: 50vw;
+    }
+
+    &.pushed600 {
+        margin-left: -300px;
+        margin-right: 300px;
+    }
+}
+
+// drawer
+
+.drawerContainer {
+    position: absolute;
+    z-index: 1100;
+
+    .drawerAppBar {
+        svg {
+            fill: $gris300 !important;
+        }
+    }
+
+    &>div {
+        height: 100vh !important;
+    }
+}
+
+// overlay
+
+@mixin overlayGradient {
+    @include gradient-directional(fade-out(desaturate(darken($violet300, 30%), 15%), .6), fade-out(desaturate(darken($orange500, 30%), 15%), .6));
+}
+
+.overlay {
+    @include overlayGradient;
+    //opacity: .7 !important;
+}

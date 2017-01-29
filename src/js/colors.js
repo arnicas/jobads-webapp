@@ -1,5 +1,7 @@
 'use strict';
 
+// TODO: Correct colors
+
 export const primary50 = '#faeffd';
 export const primary100 = '#f2d7fb';
 export const primary200 = '#e9bdf9';
