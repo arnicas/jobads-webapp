@@ -1,4 +1,5 @@
 import React from 'react';
+import Layout from '../container/Layout';
 
 // Screens
 import DropFileScreen from './DropFileScreen';
@@ -57,12 +58,12 @@ export default class Analyse extends React.Component {
         let size = (this.state.hasFile) ? this.state.file[0].size : "erreur";
         let resultScreen = (this.state.hasFile) ? (<ResultScreen/>) : "";
         return(
-            <div>
+            <Layout location={this.props.location.pathname}>
                 <div className={"dropFileScreen" + ((this.state.hasFile) ? " active" : " no-file")}>
                     <DropFileScreen hasFile={this.state.hasFile} filename={filename} size={size} error={this.state.error}/>
                 </div>
                 {resultScreen}
-            </div>
+            </Layout>
         );
     }
 }

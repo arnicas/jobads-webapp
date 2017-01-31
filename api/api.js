@@ -23,4 +23,14 @@ router.post('/cv-upload', upload.single('file'), (req, res) => {
 
 });
 
+//
+// POST /api/text-query
+// Process text query
+//
+router.post('/text-query', (req, res) => {
+    console.log(req.body);
+    res.json({text: req.body.text});
+});
+
+
 module.exports = router;
