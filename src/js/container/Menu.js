@@ -82,7 +82,6 @@ const menuItems = [
 let inertiaTrigger = 30;
 let appBarHeight = 64;
 let handleClose = () => {return 1;}
-let handleChangeLocation = (value, path) => {return 1;}
 
 export default class Menu extends React.Component {
 
@@ -90,7 +89,7 @@ export default class Menu extends React.Component {
     super(props);
     this.state = {
       open: false,
-      value: 'analyser',
+      value: null,
       altLocation: false,
       translateY: 0
     };
@@ -106,7 +105,7 @@ export default class Menu extends React.Component {
 
   _handleSelectFieldChange = (event, index, value) => {
     this.setState({value});
-    hashHistory.push(value);
+    if (this.state.value != value) hashHistory.push(value);
   }
 
   componentWillMount () {
@@ -115,10 +114,7 @@ export default class Menu extends React.Component {
       document.body.className = "body";
     };
 
-    handleChangeLocation = (value, path) => {
-      this.setState({value});
-      hashHistory.push(path || "/"+value);
-    }
+    this.setState({value: this.props.location.replace(/^\/([^\/]*).*$/, '$1')})
   }
 
   componentWillReceiveProps(nextProps){
@@ -211,4 +207,4 @@ export default class Menu extends React.Component {
   }
 }
 
-export {handleClose, handleChangeLocation};
+export {handleClose};

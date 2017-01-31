@@ -9,7 +9,7 @@ import DropZone from 'react-dropzone';
 import {greenA100} from 'material-ui/styles/colors';
 import {onDrop} from './index';
 import InfoPopover from '../system/InfoPopover';
-import { handleChangeLocation } from '../container/Menu';
+import {hashHistory} from 'react-router';
 
 // Helper
 import formatOctet from '../helpers/formatOctet';
@@ -38,7 +38,7 @@ export default class DropFileScreen extends React.Component {
     }
 
     _onSendTextClick = () => {
-        handleChangeLocation('rechercher');
+        hashHistory.push('/rechercher');
     }
 
     _emptyFile = () => {

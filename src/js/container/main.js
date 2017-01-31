@@ -28,9 +28,6 @@ const muiTheme = getMuiTheme({
 const Main = () => (
   <MuiThemeProvider muiTheme={muiTheme}>
     <div>
-      <ScrollSpy>
-        <Menu/>
-      </ScrollSpy>
       <Router history={hashHistory}>
         <Route path="/" component={Home}/>
         <Route path="/rechercher" component={Search}/>

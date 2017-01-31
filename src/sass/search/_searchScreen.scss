@@ -1,0 +1,44 @@
+.searchContainer {
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    transition: .6s cubic-bezier(0.075, 0.82, 0.165, 1) all;
+
+
+    .searchFieldContainer {
+        display: flex;
+        flex: 1 0 auto;
+        flex-flow: column nowrap;
+        align-items: flex-start;
+        margin-right: 32px;
+        max-width: 60vw;
+        color: white;
+        min-width: 500px;
+
+        @media (max-width: $screen-xs-max) {
+            min-width: 80vw;
+        }
+    }
+
+    .textField textarea:last-of-type {
+        font-size: 26px !important;
+        color: white !important;
+    }
+
+    &.active {
+        background-color: rgba(255,255,255,.5);
+
+        .textField textarea:last-of-type {
+            color: black !important;
+        }
+
+        .badge {
+            transition: .3s;
+            opacity: 0;
+        }
+
+    }
+}
