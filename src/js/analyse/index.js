@@ -5,8 +5,7 @@ import DropFileScreen from './DropFileScreen';
 import ResultScreen from './ResultScreen';
 
 // Helpers
-import post from '../helpers/post';
-import formData from '../helpers/formData';
+import postSingleFile from '../helpers/postSingleFile';
 
 let onDrop = ()=>{return 1};
 
@@ -31,7 +30,7 @@ export default class Analyse extends React.Component {
                     hasFile: true,
                     error: false,
                 });
-                post('/api/cv-upload', formData(acceptedFiles)).then((response)=>{
+                postSingleFile('/api/cv-upload', acceptedFiles).then((response)=>{
                     console.log(response);
                 })
                 .catch((err)=>{

@@ -9,6 +9,7 @@ import DropZone from 'react-dropzone';
 import {greenA100} from 'material-ui/styles/colors';
 import {onDrop} from './index';
 import InfoPopover from '../system/InfoPopover';
+import { handleChangeLocation } from '../container/Menu';
 
 // Helper
 import formatOctet from '../helpers/formatOctet';
@@ -34,6 +35,10 @@ export default class DropFileScreen extends React.Component {
 
     _onOpenClick = () => {
         this.dropzone.open();
+    }
+
+    _onSendTextClick = () => {
+        handleChangeLocation('rechercher');
     }
 
     _emptyFile = () => {
@@ -84,7 +89,7 @@ export default class DropFileScreen extends React.Component {
                     <span>L'outil scanne votre CV et identifie les mots-clés à grande valeur lors d'une recherche d'emploi.</span>
                     <div>
                         <RaisedButton label="Télécharger mon CV" className="accentButton" onClick={this._onOpenClick}/>
-                        <FlatButton label="Envoyer un texte" className="flatButton" onClick={()=>{alert("Fonction indisponible")}}/>
+                        <FlatButton label="Envoyer un texte" className="flatButton" onClick={this._onSendTextClick}/>
                     </div>
                 </div>
             );

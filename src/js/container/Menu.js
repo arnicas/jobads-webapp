@@ -74,9 +74,15 @@ const tabs = [
   {label: "A propos", location: "a-propos"},
 ];
 
+const menuItems = [
+  {text: "Recherche simple", value: "rechercher"},
+  {text: "Analyse de CV", value: "analyser"},
+];
+
 let inertiaTrigger = 30;
 let appBarHeight = 64;
 let handleClose = () => {return 1;}
+let handleChangeLocation = (value, path) => {return 1;}
 
 export default class Menu extends React.Component {
 
@@ -107,6 +113,11 @@ export default class Menu extends React.Component {
     handleClose = () => {
       this.setState({open: false, altLocation: false});
       document.body.className = "body";
+    };
+
+    handleChangeLocation = (value, path) => {
+      this.setState({value});
+      hashHistory.push(path || "/"+value);
     }
   }
 
@@ -131,6 +142,14 @@ export default class Menu extends React.Component {
     });
   }
 
+  _mapMenuItem = () => {
+    return menuItems.map((menuItem)=>{
+      return (
+        <MenuItem value={menuItem.value} key={menuItem.value} primaryText={menuItem.text} />
+      );
+    });
+  }
+
   render() {
 
     return (
@@ -152,8 +171,7 @@ export default class Menu extends React.Component {
             underlineStyle={styles.underline}
             selectedMenuItemStyle={styles.selectedMenuItem}
           >
-            <MenuItem value={'analyser'} primaryText="Analyse de CV" />
-            <MenuItem value={'rechercher'} primaryText="Recherche simple" />
+            {this._mapMenuItem()}
           </SelectField>
           <div style={styles.separator}/>
           <Tabs
@@ -193,4 +211,4 @@ export default class Menu extends React.Component {
   }
 }
 
-export {handleClose};
+export {handleClose, handleChangeLocation};

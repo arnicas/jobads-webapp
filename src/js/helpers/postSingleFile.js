@@ -1,8 +1,9 @@
-export default (url, data) => {
+export default (url, files) => {
+    const data = new FormData();
+    data.append('file', files[0]);
     return new Promise( (resolve, reject) => {
         let request = new XMLHttpRequest();
         request.open('POST', url, true);
-        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         request.onloadend = () => {
             if(request.readyState == 4 && request.status == 200) {
                 resolve(JSON.parse(request.response));

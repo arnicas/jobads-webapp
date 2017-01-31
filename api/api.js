@@ -1,16 +1,26 @@
-var router = require('express').Router();
+let router = require('express').Router();
+let multer = require('multer');
+let PDFParser = require("pdf2json");
+
+let upload = multer({limits: {fileSize: 2000000}});
 
 //
-// POST /api/cv
-// Treat CV
+// POST /api/cv-upload
+// Process CV
 //
-// Post parameters:
-//   first_name: first name of the new customer
-//   last_name: last name of the new customer
-//   birthdate: birthdate of the new customer
-//
-router.post('/cv-upload', (req, res) => {
-    console.log('req.files');
+router.post('/cv-upload', upload.single('file'), (req, res) => {
+
+    let pdfParser = new PDFParser(this,1);
+
+    pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
+    pdfParser.on("pdfParser_dataReady", pdfData => {
+        //console.log(JSON.stringify(pdfData));
+        let pdfParsed = pdfParser.getRawTextContent();
+        res.json({text: pdfParsed});
+    });
+
+    pdfParser.parseBuffer(req.file.buffer);
+
 });
 
 module.exports = router;
