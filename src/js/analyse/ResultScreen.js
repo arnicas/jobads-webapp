@@ -7,6 +7,9 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 // Helpers
 import formatPercent from '../helpers/formatPercent';
 
+//Result views
+import Map from './Map';
+
 const styles = {
   chip: {
     margin: 4,
@@ -35,7 +38,9 @@ const jobs = [
         available : '01/01/2017',
         type: 'Stage',
         length: '6 mois',
-        description: "Le chef de projet est la personne chargée de mener un projet et de gérer son bon déroulement. De manière générale, il anime une équipe pendant la durée du ..."
+        description: "Le chef de projet est la personne chargée de mener un projet et de gérer son bon déroulement. De manière générale, il anime une équipe pendant la durée du ...",
+        latitude: 45.7579341,
+        longitude: 4.7650812,
     },
     {
         id: 1,
@@ -46,7 +51,9 @@ const jobs = [
         available : '01/03/2017',
         type: 'CDI',
         length: '',
-        description: "En génie informatique, on appelle architecte informatique la personne chargée de l'analyse technique nécessaire à la conception du diagramme d'architecture, ..."
+        description: "En génie informatique, on appelle architecte informatique la personne chargée de l'analyse technique nécessaire à la conception du diagramme d'architecture, ...",
+        latitude: 45.7572155,
+        longitude: 4.7863672,
     },
     {
         id: 2,
@@ -57,7 +64,9 @@ const jobs = [
         available : '01/06/2017',
         type: 'Stage',
         length: '1 mois',
-        description: "L'ingénieur réseau est un spécialiste des questions de communication au sens technique du terme. Il est responsable de l'optimisation et du bon ..."
+        description: "L'ingénieur réseau est un spécialiste des questions de communication au sens technique du terme. Il est responsable de l'optimisation et du bon ...",
+        latitude: 45.7639221,
+        longitude: 4.7846506,
     },
 ];
 
@@ -106,8 +115,38 @@ export default class ResultScreen extends React.Component {
         });
     }
 
+    _getRandomMarkers = () => {
+        let randomMarkers = [];
+        for(let i=0; i<1000; i++) {
+            randomMarkers.push({
+                lat: (40+(Math.random() * 10)),
+                lng: (-3+(Math.random() * 10)),
+                weight: Math.floor((Math.random() * 10)+1),
+            });
+        }
+        return randomMarkers;
+    }
+
 
     render () {
+        let resultView = '';
+        switch(this.state.value) {
+            case('list'):
+                resultView = (
+                    <div className="jobTableOutter">
+                        <div className="jobTable">
+                            {this._mapJobs()}
+                        </div>
+                    </div>
+                );
+                break;
+            case('map'):
+                resultView = (
+                    <div className="jobMap">
+                        <Map markers={this._getRandomMarkers()}/>
+                    </div>
+                );
+        }
         return (
             <div className="resultScreen">
                 <div className="firstScreen">
@@ -127,11 +166,7 @@ export default class ResultScreen extends React.Component {
                         <Tab label="Carte" value="map" className="tab" buttonStyle={styles.tabLabel}></Tab>
                     </Tabs>
                 </div>
-                <div className="jobTableOutter">
-                    <div className="jobTable">
-                        {this._mapJobs()}
-                    </div>
-                </div>
+                {resultView}
             </div>
         );
     }

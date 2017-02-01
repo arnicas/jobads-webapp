@@ -4,7 +4,6 @@
     flex-flow: column nowrap;
     align-items: stretch;
     background: white;
-    height: 200vh;
 
     .firstScreen{
         @include gradient-vertical(white, $gris25);
@@ -79,6 +78,28 @@
                     min-width: 88px;
                 }
             }
+        }
+    }
+
+    .jobMap {
+        height: 80vh;
+
+        .mapCluster {
+            transform: translate(-50%, -50%);
+            opacity: .8;
+            transition: .3;
+            display: inline-block;
+            height: auto;
+            padding: 10px;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+
+        .mapMarker {
+            transform: translate(-50%, -100%);
+            fill: $gris900 !important;
         }
     }
 }
