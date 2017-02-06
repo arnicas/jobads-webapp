@@ -3,6 +3,10 @@ import Chip from 'material-ui/Chip';
 import {blue300, indigo300, yellow500, amber500, deepOrange300, greenA400, grey700} from 'material-ui/styles/colors';
 import Avatar from 'material-ui/Avatar';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
+import ContentFilter from 'material-ui/svg-icons/content/filter-list';
+import FilterBar from '../components/FilterBar';
 
 // Helpers
 import formatPercent from '../helpers/formatPercent';
@@ -18,6 +22,7 @@ const styles = {
   inkBar: {
     backgroundColor: greenA400,
     top: 1,
+    height: 3,
   },
   tabItemContainer: {
     backgroundColor: 'none',
@@ -80,6 +85,7 @@ export default class ResultScreen extends React.Component {
         super(props);
         this.state = {
             value: 'list',
+            open: false
         };
     }
 
@@ -127,6 +133,10 @@ export default class ResultScreen extends React.Component {
         return randomMarkers;
     }
 
+    _toggleFilterBar = () => {
+        this.setState({open: !this.state.open});
+    }
+
 
     render () {
         let resultView = '';
@@ -134,6 +144,7 @@ export default class ResultScreen extends React.Component {
             case('list'):
                 resultView = (
                     <div className="jobTableOutter">
+                        <FilterBar open={this.state.open} handleClose={this._toggleFilterBar}/>
                         <div className="jobTable">
                             {this._mapJobs()}
                         </div>
@@ -165,6 +176,10 @@ export default class ResultScreen extends React.Component {
                         <Tab label="Liste" value="list" className="tab" buttonStyle={styles.tabLabel}></Tab>
                         <Tab label="Carte" value="map" className="tab" buttonStyle={styles.tabLabel}></Tab>
                     </Tabs>
+                    <FlatButton label="Options" className={"options hidden-xs " + this.state.open} onClick={this._toggleFilterBar}/>
+                    <IconButton className="options-xs visible-xs-inline-block" onClick={this._toggleFilterBar}>
+                        <ContentFilter />
+                    </IconButton>
                 </div>
                 {resultView}
             </div>
