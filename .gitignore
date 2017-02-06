@@ -4,4 +4,3 @@ node_modules
 wiki
 npm-debug.log
 jsconfig.json
-src/config/keys.js

@@ -22,6 +22,25 @@
 
         .tabs {
             width: 200px;
+            display: inline-block;
+        }
+
+        button.options {
+            float: right;
+            top: 5px;
+            color: $gris500 !important;
+
+            &.true {
+                background: $gris50 !important;
+            }
+        }
+
+        button.options-xs {
+            float: right;
+
+            svg {
+                fill: $gris500 !important;
+            }
         }
     }
 
