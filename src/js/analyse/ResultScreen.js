@@ -118,6 +118,7 @@ export default class ResultScreen extends React.Component {
     }
 
     _setListAndMap = (resultsIn) => {
+        if(!resultsIn) return ({list:[],map:[]});
         let list = [], map = [];
         resultsIn.map((result)=>{
             list.push({
