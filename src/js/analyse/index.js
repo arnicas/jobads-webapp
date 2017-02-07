@@ -56,7 +56,7 @@ export default class Analyse extends React.Component {
     render() {
         let filename = (this.state.hasFile) ? this.state.file[0].name : "erreur";
         let size = (this.state.hasFile) ? this.state.file[0].size : "erreur";
-        let resultScreen = (this.state.hasFile) ? (<ResultScreen/>) : "";
+        let resultScreen = (this.state.hasFile) ? (<ResultScreen test={true}/>) : "";
         return(
             <Layout location={this.props.location.pathname}>
                 <div className={"dropFileScreen" + ((this.state.hasFile) ? " active" : " no-file")}>

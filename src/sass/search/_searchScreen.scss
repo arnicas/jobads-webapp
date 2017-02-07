@@ -1,5 +1,4 @@
 .searchContainer {
-    height: 100%;
     min-height: 100vh;
     display: flex;
     flex-flow: row wrap;
@@ -40,5 +39,49 @@
             opacity: 0;
         }
 
+    }
+
+    &.showResult {
+        justify-content: flex-start;
+        align-items: flex-end;
+        height: auto;
+        min-height: 130px;
+        position: relative;
+
+        .searchFieldContainer {
+            margin-left: 5vw;
+            flex-flow: row nowrap;
+            align-items: flex-end;
+
+            .textField {
+                margin-top: 32px;
+
+            }
+
+            button {
+                bottom: 6px;
+            }
+        }
+        
+        &.active {
+            svg {
+                fill: black !important;
+            }
+        }
+
+    }
+
+    .waitingIndicator {
+        margin-top: -4px !important;
+        bottom: 6px;
+        left: 4px;
+
+        &.allWidth {
+            position: absolute !important;
+            height: 10px !important;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
     }
 }

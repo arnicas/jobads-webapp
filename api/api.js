@@ -1,6 +1,7 @@
 let router = require('express').Router();
 let multer = require('multer');
 let PDFParser = require("pdf2json");
+let https = require('https');
 
 let upload = multer({limits: {fileSize: 2000000}});
 
@@ -28,8 +29,30 @@ router.post('/cv-upload', upload.single('file'), (req, res) => {
 // Process text query
 //
 router.post('/text-query', (req, res) => {
-    console.log(req.body);
-    res.json({text: req.body.text});
+    let path =  '/api/ads/search/' + encodeURI(req.body.text);
+    console.log('> ads/search/'+encodeURI(req.body.text));
+    https.get({
+        hostname: 'jobads-textminer.herokuapp.com',
+        path: path,
+        agent: false  // create a new agent just for this one request
+    }, (apiRes) => {// Continuously update stream with data
+        console.log(' : '+apiRes.statusCode);
+        if(apiRes.statusCode = 200) {
+            let body = '';
+            apiRes.on('data', function(d) {
+                body += d;
+            });
+            apiRes.on('end', function() {
+                // Data reception is done
+                let parsedApiRes = JSON.parse(body);
+                res.json({status: 200, res: parsedApiRes});
+            });
+        } else {
+            res.json({status: apiRes.statusCode});
+        }
+    }).on('error', (e) => {
+        console.log(e);
+    });
 });
 
 
