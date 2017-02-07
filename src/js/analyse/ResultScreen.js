@@ -7,12 +7,16 @@ import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import FilterBar from '../components/FilterBar';
+import LocationIcon from 'material-ui/svg-icons/maps/place';
+import CalendarIcon from 'material-ui/svg-icons/action/today';
 
 // Helpers
 import formatPercent from '../helpers/formatPercent';
+import formatDate from '../helpers/formatDate';
 
 //Result views
 import Map from './Map';
+
 
 const styles = {
   chip: {
@@ -33,7 +37,24 @@ const styles = {
   }
 };
 
-const jobs = [
+
+const temp = (
+    <div>
+        <h3 className="center">Mots-clés</h3>
+        <div className="searchResultBar" style={styles.wrapper}>
+            <Chip backgroundColor={blue300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">NodeJS</Chip>
+            <Chip backgroundColor={indigo300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Express</Chip>
+            <Chip backgroundColor={blue300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Javascript</Chip>
+            <Chip backgroundColor={yellow500} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Management</Chip>
+            <Chip backgroundColor={amber500} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Digital marketing</Chip>
+            <Chip backgroundColor={deepOrange300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">English</Chip>
+            <Chip backgroundColor={yellow500} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Agile and Scrum</Chip>
+        </div>
+        <h3 className="center separator">Offres correspondantes</h3>
+    </div>
+);
+
+const jobsTest = [
     {
         id: 0,
         brand: 'EDF',
@@ -83,10 +104,39 @@ export default class ResultScreen extends React.Component {
 
     constructor(props) {
         super(props);
+        let {list, map} = this._setListAndMap(this.props.results);
         this.state = {
             value: 'list',
-            open: false
+            open: false,
+            list: list,
+            map: map
         };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState(this._setListAndMap(nextProps.results));
+    }
+
+    _setListAndMap = (resultsIn) => {
+        let list = [], map = [];
+        resultsIn.map((result)=>{
+            list.push({
+                company: result.company,
+                title_fr: result.title_fr,
+                description_fr: result.description_fr,
+                location: result.location,
+                date: result.date,
+                id: result.id
+            });
+            if (result.geolocation){
+                map.push({
+                    lat: result.geolocation.lat,
+                    lng: result.geolocation.lon,
+                    weight: 40,
+                });
+            }
+        });
+        return ({list:list,map:map});
     }
 
     _handleChange = (value) => {
@@ -96,26 +146,60 @@ export default class ResultScreen extends React.Component {
     };
 
     _mapJobs() {
-        return jobs.map((job)=>{
+        let jobs_ = this.props.test ? jobsTest : this.state.list;
+        if (jobs_.length == 0) {
+            return(
+                <div className="jobRow">
+                    <div className="jobCell jobDescription">
+                        <h3>:(</h3>
+                        <p>Aucun résultat ne correspond à votre recherche</p>
+                    </div>
+                </div>
+            );
+        }
+        return jobs_.map((job)=>{
             return (
                 <div className="jobRow" key={job.id}>
-                    <div className="jobCell jobAvatar">
-                        <Avatar src={job.logoURL} />
-                    </div>
-                    <div className="jobCell jobDescription">
-                        <h3>{job.brand}</h3>
-                        <h4>{job.title}</h4>
-                        <p>{job.description}</p>
-                    </div>
-                    <div className="jobCell jobMatchScore">
-                        {formatPercent(job.matchScore)}
-                    </div>
-                    <div className="jobCell jobType">
-                        <span>{job.type} {(job.length.length>0) ? '('+job.length+')' : ''}</span>
-                    </div>
-                    <div className="jobCell jobAvailability">
-                        <span>{job.available}</span>
-                    </div>
+                    {this.props.test &&
+                        <div className="jobCell jobAvatar">
+                            <Avatar src={job.logoURL} />
+                        </div>
+                    }
+                    {this.props.test &&
+                        <div className="jobCell jobDescription">
+                            <h3>{job.brand}</h3>
+                            <h4>{job.title}</h4>
+                            <p>{job.description}</p>
+                        </div>
+                    }
+                    {!this.props.test &&
+                        <div className="jobCell jobDescription">
+                            <h3>{job.company}</h3>
+                            <h4>{job.title_fr}</h4>
+                            <p>{job.description_fr.length > 155 ? job.description_fr.substring(0,155)+"..." : job.description_fr}</p>
+                            <div className="info">
+                                <LocationIcon/>
+                                <span>{job.location}</span>
+                                <CalendarIcon/>
+                                <span>{"Publié le "+formatDate(job.date)}</span>
+                            </div>
+                        </div>
+                    }
+                    {this.props.test &&
+                        <div className="jobCell jobMatchScore">
+                            {formatPercent(job.matchScore)}
+                        </div>
+                    }
+                    {this.props.test &&
+                        <div className="jobCell jobType">
+                            <span>{job.type} {(job.length.length>0) ? '('+job.length+')' : ''}</span>
+                        </div>
+                    }
+                    {this.props.test &&
+                        <div className="jobCell jobAvailability">
+                            <span>{job.available}</span>
+                        </div>
+                    }
                 </div>
             );
         });
@@ -137,7 +221,6 @@ export default class ResultScreen extends React.Component {
         this.setState({open: !this.state.open});
     }
 
-
     render () {
         let resultView = '';
         switch(this.state.value) {
@@ -154,24 +237,14 @@ export default class ResultScreen extends React.Component {
             case('map'):
                 resultView = (
                     <div className="jobMap">
-                        <Map markers={this._getRandomMarkers()}/>
+                        <Map markers={this.props.test ? this._getRandomMarkers() : this.state.map}/>
                     </div>
                 );
         }
         return (
             <div className="resultScreen">
                 <div className="firstScreen">
-                    <h3 className="center">Mots-clés</h3>
-                    <div className="searchResultBar" style={styles.wrapper}>
-                        <Chip backgroundColor={blue300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">NodeJS</Chip>
-                        <Chip backgroundColor={indigo300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Express</Chip>
-                        <Chip backgroundColor={blue300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Javascript</Chip>
-                        <Chip backgroundColor={yellow500} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Management</Chip>
-                        <Chip backgroundColor={amber500} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Digital marketing</Chip>
-                        <Chip backgroundColor={deepOrange300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">English</Chip>
-                        <Chip backgroundColor={yellow500} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Agile and Scrum</Chip>
-                    </div>
-                    <h3 className="center separator">Offres correspondantes</h3>
+                    {this.props.test && temp}
                     <Tabs value={this.state.value} onChange={this._handleChange} inkBarStyle={styles.inkBar} tabItemContainerStyle={styles.tabItemContainer} tabTemplateStyle={styles.tabTemplate} className="tabs">
                         <Tab label="Liste" value="list" className="tab" buttonStyle={styles.tabLabel}></Tab>
                         <Tab label="Carte" value="map" className="tab" buttonStyle={styles.tabLabel}></Tab>

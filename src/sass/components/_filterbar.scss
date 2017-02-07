@@ -9,5 +9,6 @@
     &.hidden {
         opacity: 0;
         height: 0 !important;
+        overflow: hidden;
     }
 }

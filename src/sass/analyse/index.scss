@@ -22,7 +22,7 @@
     }
 
     &.active::after {
-        transition: .3s cubic-bezier(0.4, 0.0, 1, 1); 
+        transition: .3s cubic-bezier(0.4, 0.0, 1, 1) bottom; 
         bottom: 0;
     }
 }
