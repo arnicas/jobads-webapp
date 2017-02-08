@@ -45,7 +45,7 @@
         }
     }
 
-    .jobTableOutter {
+    .jobOutter {
         overflow-x: auto;
     }
 
@@ -122,20 +122,61 @@
     }
 
     .jobMap {
-        height: 80vh;
 
-        .mapCluster {
-            transform: translate(-50%, -50%);
-            text-shadow: white 0 0 3px;
-            color: $gris900;
-            font-size: 14px;
+        position: relative;
+
+        .info {
+            top: 5px;
+            width: 200px;
+            text-align: center;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            position: absolute;
+            padding-bottom: 5px;
+
+            &>div:first-of-type {
+
+                background: $vertA400;
+                padding: 5px;
+                margin-bottom: 5px;
+
+                span {
+                    font-size: 16px;
+                    color: white;
+                }
+            }
         }
 
-        .mapMarker {
-            transform: translate(-50%, -100%);
-            fill: url(#MyGradient2) !important;
-            width: 36px !important;
-            height: 36px !important;
+        &>div:first-of-type {
+            height: 80vh;
+
+            .mapCluster {
+                transform: translate(-18px, -36px);
+                position: relative;
+
+                svg {
+                    fill: url(#MyGradient2) !important;
+                    width: 36px !important;
+                    height: 36px !important;
+                }
+                span {
+                    position: absolute;
+                    top: 8px;
+                    text-align: center;
+                    width: 36px;
+                    text-shadow: $gris900 0 0 5px;
+                    color: white;
+                    font-size: 11px;
+                }
+            }
+
+            .mapMarker {
+                transform: translate(-50%, -100%);
+                fill: url(#MyGradient2) !important;
+                width: 36px !important;
+                height: 36px !important;
+            }
         }
     }
 }

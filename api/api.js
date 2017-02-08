@@ -37,15 +37,21 @@ router.post('/text-query', (req, res) => {
         agent: false  // create a new agent just for this one request
     }, (apiRes) => {// Continuously update stream with data
         console.log(' : '+apiRes.statusCode);
-        if(apiRes.statusCode = 200) {
+        if(apiRes.statusCode == 200) {
             let body = '';
             apiRes.on('data', function(d) {
                 body += d;
             });
             apiRes.on('end', function() {
                 // Data reception is done
-                let parsedApiRes = JSON.parse(body);
-                res.json({status: 200, res: parsedApiRes});
+                let parsedApiRes = "";
+                try {
+                    parsedApiRes = JSON.parse(body);
+                    res.json({status: 200, res: parsedApiRes});
+                } catch (e) {
+                    console.log(e);
+                    res.json({status: 500});
+                }
             });
         } else {
             res.json({status: apiRes.statusCode});

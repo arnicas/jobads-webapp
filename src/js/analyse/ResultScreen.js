@@ -109,7 +109,8 @@ export default class ResultScreen extends React.Component {
             value: 'list',
             open: false,
             list: list,
-            map: map
+            map: map,
+            mapFiltering : {enable: false, from: 'list'},
         };
     }
 
@@ -222,23 +223,29 @@ export default class ResultScreen extends React.Component {
         this.setState({open: !this.state.open});
     }
 
+    _handleMapFilter = () => {
+        this.setState({open: false, value: 'map', mapFiltering: {enable: true, from: this.state.value}});
+    }
+
+    _handleFilteringResult = (filteringCenter, filteringRadius) => {
+        console.log(filteringCenter, filteringRadius);
+        this.setState({value: this.state.mapFiltering.from, mapFiltering: {enable: false, from: 'list'}});
+    }
+
     render () {
         let resultView = '';
         switch(this.state.value) {
             case('list'):
                 resultView = (
-                    <div className="jobTableOutter">
-                        <FilterBar open={this.state.open} handleClose={this._toggleFilterBar}/>
-                        <div className="jobTable">
-                            {this._mapJobs()}
-                        </div>
+                    <div className="jobTable">
+                        {this._mapJobs()}
                     </div>
                 );
                 break;
             case('map'):
                 resultView = (
                     <div className="jobMap">
-                        <Map markers={this.props.test ? this._getRandomMarkers() : this.state.map}/>
+                        <Map markers={this.props.test ? this._getRandomMarkers() : this.state.map} mapFiltering={this.state.mapFiltering.enable} handleFilteringResult={this._handleFilteringResult}/>
                     </div>
                 );
         }
@@ -255,7 +262,10 @@ export default class ResultScreen extends React.Component {
                         <ContentFilter />
                     </IconButton>
                 </div>
-                {resultView}
+                <div className="jobOutter">
+                    <FilterBar open={this.state.open} handleClose={this._toggleFilterBar} handleMapFilter={this._handleMapFilter} mapMode={this.state.value == 'map'}/>
+                    {resultView}
+                </div>
             </div>
         );
     }

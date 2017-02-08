@@ -70,6 +70,7 @@ export default class FilterBar extends React.Component {
 
     render() {
         let toolbarClassName = this.state.open ? "filterBar hidden-xs" : "filterBar hidden-xs hidden";
+        if (this.props.mapMode) toolbarClassName += " hidden";
         let durationLabel = "Durée";
         if(this.state.durationMin > defaultState.durationMin && this.state.durationMax < defaultState.durationMax) {
             durationLabel += " : entre "+(this.state.durationMin+1)+" et "+(this.state.durationMax+1)+" mois";
@@ -88,14 +89,14 @@ export default class FilterBar extends React.Component {
                             <MenuItem value={0} label={durationLabel} style={{display: "none"}}/>
                             <SliderRange labels={["1 mois","2 mois","3 mois","4 mois","5 mois","6 mois","∞"]} min={this.state.durationMin} max={this.state.durationMax} onChange={this._handleDurationChange}/>
                         </DropDownMenu>
-                        <span style={styles.mapButton} >Filtre géographique...</span>
+                        <span style={styles.mapButton} onClick={this.props.handleMapFilter}>Filtre géographique...</span>
                     </ToolbarGroup>
                     <Dialog
                         title="Options"
                         modal={false}
                         open={this.state.open}
                         onRequestClose={this._handleClose}
-                        className="dialog visible-xs-block"
+                        className={this.props.mapMode ? "dialog" : "dialog visible-xs-block"}
                         bodyStyle={styles.dialog}
                     >
                         <TypeDropdown labelStyle={styles.dropdown} iconStyle={styles.dropdownIcon}/>
@@ -104,7 +105,7 @@ export default class FilterBar extends React.Component {
                             <MenuItem value={0} label={durationLabel} style={{display: "none"}}/>
                             <SliderRange labels={["1 mois","2 mois","3 mois","4 mois","5 mois","6 mois","∞"]} min={this.state.durationMin} max={this.state.durationMax} onChange={this._handleDurationChange}/>
                         </DropDownMenu>
-                        <span style={styles.mapButton} >Filtre géographique...</span>
+                        <span style={styles.mapButton} onClick={this.props.handleMapFilter}>Filtre géographique...</span>
                     </Dialog>
                 </Toolbar>
             </div>
