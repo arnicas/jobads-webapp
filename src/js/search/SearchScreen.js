@@ -66,7 +66,7 @@ export default class SearchScreen extends React.Component {
         this.setState({waiting: true});
         post('/api/text-query', {text: this.state.value}).then((response)=>{
             if(response.status == 200) {
-                this.setState({waiting: false, showResult:true, results:response.res, error: 0});
+                this.setState({waiting: false, showResult:true, results:response.res.results, error: 0});
             } else {
                 this.setState({waiting: false, error: response.status});
             }
