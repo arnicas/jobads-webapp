@@ -117,7 +117,7 @@ export default class SearchScreen extends React.Component {
                     </div>
                 </div>
                 {this.state.showResult &&
-                    <ResultScreen results={this.state.results}/>
+                    <ResultScreen results={this.state.results} triggerRefresh={this.state.waiting}/>
                 }
                 {this.state.error !== 0 &&
                     <Snackbar
