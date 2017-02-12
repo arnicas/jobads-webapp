@@ -1,0 +1,86 @@
+.mapPanel {
+
+    position: absolute;
+    left: 0;
+    width: 350px;
+    top: 0;
+    bottom: 100%;
+    z-index: 100;
+    padding: 16px 0 16px 16px;
+    transition: .3s cubic-bezier(0.4, 0.0, 0.2, 1) bottom;
+
+    &.active {
+        bottom:0
+    }
+
+    @media (max-width: $screen-xs-max) {
+        position: static;
+        padding: 0;
+        height: 0;
+        width: 100%;
+        transition: .5s cubic-bezier(0.4, 0.0, 0.2, 1) height;
+
+        &.active {
+            height:40vh;
+            transition: .5s cubic-bezier(0.4, 0.0, 0.2, 1) height .2s;
+        }
+    }
+
+    .mapPanelPaper {
+        height: 100%;
+        width: 100%;
+        overflow-y: hidden;
+        display: flex;
+        flex-flow: row nowrap;
+        overflow-x: hidden;
+        margin-left: 0;
+
+        &.active {
+            .mapPanelList {
+                margin-left: -100%;
+            }
+        }
+
+        .mapPanelList {
+            transition: .3s cubic-bezier(0.4, 0.0, 0.2, 1) margin-left;
+            flex: 1 0 100%;
+            padding: 0 !important;
+            height: 100%;
+
+            .mapPanelInfinite {
+                height: 100% !important;
+                overflow-y: auto !important;
+
+                h3 {
+                    font-size: 12px !important;
+                    color: $gris400;
+                    margin: 4px 0;
+                }
+
+                h4 {
+                    font-size: 15px !important;
+                    color: $gris900 !important;
+                    font-weight: 400;
+                }
+
+                .loadingIndicator {
+                    width: 100% !important;
+                    text-align: center;
+                    padding: 16px 0;
+                }
+            }
+
+        }
+
+        .detailPanel {
+            flex: 1 0 100%; 
+            width: 100%;
+
+            .appBar {
+                background: $vertA400 !important;
+            }
+
+
+        }
+    }
+}

@@ -111,11 +111,16 @@ export default class ResultScreen extends React.Component {
             list: list,
             map: map,
             mapFiltering : {enable: false, from: 'list'},
+            refreshMapKey : 0,
         };
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState(this._setListAndMap(nextProps.results));
+        console.log(this.props.triggerRefresh && !nextProps.triggerRefresh);
+        if(this.props.triggerRefresh && !nextProps.triggerRefresh) {
+            this.setState(this._setListAndMap(nextProps.results));
+            this.setState({refreshMapKey:this.state.refreshMapKey+1});
+        }
     }
 
     _setListAndMap = (resultsIn) => {
@@ -135,6 +140,7 @@ export default class ResultScreen extends React.Component {
                     lat: result.geolocation.lat,
                     lng: result.geolocation.lon,
                     weight: 40,
+                    id: result._id,
                 });
             }
         });
@@ -214,6 +220,7 @@ export default class ResultScreen extends React.Component {
                 lat: (40+(Math.random() * 10)),
                 lng: (-3+(Math.random() * 10)),
                 weight: Math.floor((Math.random() * 10)+1),
+                id: i,
             });
         }
         return randomMarkers;
@@ -245,7 +252,7 @@ export default class ResultScreen extends React.Component {
             case('map'):
                 resultView = (
                     <div className="jobMap">
-                        <Map markers={this.props.test ? this._getRandomMarkers() : this.state.map} mapFiltering={this.state.mapFiltering.enable} handleFilteringResult={this._handleFilteringResult}/>
+                        <Map key={this.state.refreshMapKey} markers={this.props.test ? this._getRandomMarkers() : this.state.map} mapFiltering={this.state.mapFiltering.enable} handleFilteringResult={this._handleFilteringResult}/>
                     </div>
                 );
         }
