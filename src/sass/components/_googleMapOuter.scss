@@ -1,5 +1,11 @@
 .googleMapOuter {
 
+    .loadingIndicator {
+        width: 100% !important;
+        text-align: center;
+        margin-top: 32px;
+    }
+
     &>div:first-of-type{
         height: 80vh !important;
         transition: .5s cubic-bezier(0.4, 0.0, 0.2, 1) height;

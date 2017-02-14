@@ -64,7 +64,7 @@ export default class SearchScreen extends React.Component {
 
     _onSendClick = () => {
         this.setState({waiting: true});
-        post('/api/text-query', {text: this.state.value}).then((response)=>{
+        post('/api/ads/search/', {text: this.state.value}).then((response)=>{
             if(response.status == 200) {
                 this.setState({waiting: false, showResult:true, results:response.res.results, error: 0});
             } else {
@@ -117,7 +117,7 @@ export default class SearchScreen extends React.Component {
                     </div>
                 </div>
                 {this.state.showResult &&
-                    <ResultScreen results={this.state.results} triggerRefresh={this.state.waiting}/>
+                    <ResultScreen results={this.state.results} triggerRefresh={this.state.waiting} query={this.state.value}/>
                 }
                 {this.state.error !== 0 &&
                     <Snackbar

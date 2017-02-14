@@ -116,7 +116,6 @@ export default class ResultScreen extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(this.props.triggerRefresh && !nextProps.triggerRefresh);
         if(this.props.triggerRefresh && !nextProps.triggerRefresh) {
             this.setState(this._setListAndMap(nextProps.results));
             this.setState({refreshMapKey:this.state.refreshMapKey+1});
@@ -252,7 +251,13 @@ export default class ResultScreen extends React.Component {
             case('map'):
                 resultView = (
                     <div className="jobMap">
-                        <Map key={this.state.refreshMapKey} markers={this.props.test ? this._getRandomMarkers() : this.state.map} mapFiltering={this.state.mapFiltering.enable} handleFilteringResult={this._handleFilteringResult}/>
+                        <Map
+                        key={this.state.refreshMapKey}
+                        markers={this.props.test ? this._getRandomMarkers() : this.state.map}
+                        mapFiltering={this.state.mapFiltering.enable}
+                        handleFilteringResult={this._handleFilteringResult}
+                        query={this.props.query}
+                        />
                     </div>
                 );
         }
