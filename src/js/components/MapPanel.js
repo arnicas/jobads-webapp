@@ -4,6 +4,11 @@ import {List, ListItem} from 'material-ui/List';
 import CircularProgress from 'material-ui/CircularProgress';
 import {greenA400} from 'material-ui/styles/colors';
 import DetailPanel from './DetailPanel';
+import Snackbar from 'material-ui/Snackbar';
+
+// Helpers
+import post from '../helpers/post';
+import arrayEquals from '../helpers/arrayEquals';
 
 // Infinite
 import Infinite from 'react-infinite';
@@ -17,6 +22,7 @@ export default class MapPanel extends React.Component {
             isInfiniteLoading: false,
             elements: [],
             selectedId: -1,
+            error: 0,
         }
     }
 
@@ -33,44 +39,64 @@ export default class MapPanel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this._handleInfiniteLoad(true);
-        setTimeout(this._setContainerHeight,300);
+        if (!arrayEquals(this.props.selectedIds,nextProps.selectedIds)) {
+            this._handleInfiniteLoad(true, nextProps);
+            setTimeout(this._setContainerHeight,500);
+        }
     }
 
     _setContainerHeight = () => {
         this.setState({containerHeight: document.getElementById('mapPanelPaper').offsetHeight});
     }
 
-    _buildElements = (start, end) => {
-        let elements = [];
+    _buildElements = (start, end, props) => {
+        let ids = [];
+        if (start == end) return false;
         for (var i = start; i < end; i++) {
-            let id = this.props.selectedIds[i];
-            elements.push(
-                <ListItem
-                key={id}
-                primaryText={<h3>Company</h3>}
-                secondaryText={<h4>{"Job Title " +id}</h4>}
-                onClick={()=>this.setState({selectedId:id})}
-                />
-            );
+            ids.push(props.selectedIds[i]);
         }
-        return elements;
+        return {ids};
     }
 
-    _handleInfiniteLoad = (reset = false) => {
-        if (reset || this.state.elements.length < this.props.selectedIds.length) {
+    _handleInfiniteLoad = (reset = false, nextProps = {}) => {
+        let defaultProps = this.props;
+        let props = Object.assign({},defaultProps,nextProps);
+        if (reset || this.state.elements.length < props.selectedIds.length) {
             this.setState({
                 isInfiniteLoading: true,
             });
-            setTimeout(() => {
-                let elemLength = reset ? 0 : this.state.elements.length,
-                    newElements = this._buildElements(elemLength, Math.min(elemLength + 20, this.props.selectedIds.length));
-                console.log(elemLength, Math.min(elemLength + 20, this.props.selectedIds.length));
-                this.setState({
-                    isInfiniteLoading: false,
-                    elements: reset ? newElements : this.state.elements.concat(newElements)
+            let elemLength = reset ? 0 : this.state.elements.length,
+                newElementsIds = this._buildElements(elemLength, Math.min(elemLength + 20, props.selectedIds.length), props);
+            if (newElementsIds) {
+                post('/api/ads/get_basic_info', newElementsIds).then((response)=>{
+                    if(response.status == 200) {
+                        let rawListItems = response.res.results;
+                        let newElements = [];
+                        rawListItems.map((listItem)=>{
+                            newElements.push(
+                                <ListItem
+                                key={listItem._id}
+                                primaryText={<h3>{listItem.company}</h3>}
+                                secondaryText={<h4>{listItem.title_fr}</h4>}
+                                onClick={()=>this.setState({selectedId:listItem._id})}
+                                />
+                            );
+                        });
+                        this.setState({
+                            isInfiniteLoading: false,
+                            elements: reset ? newElements : this.state.elements.concat(newElements),
+                            error: 0
+                        });
+                    } else {
+                        this.setState({isInfiniteLoading: false, error: response.status});
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                    this.setState({isInfiniteLoading: false, error: err});
                 });
-            }, 2000);
+            } else {
+                this.setState({isInfiniteLoading: false});
+            }
         }
     }
 
@@ -95,6 +121,13 @@ export default class MapPanel extends React.Component {
                     </List>
                     <DetailPanel selectedId={-1} onClick={()=>this.setState({selectedId:-1})}/>
                 </Paper>
+                {this.state.error !== 0 &&
+                    <Snackbar
+                        open={true}
+                        message={"Une erreur est survenue ("+this.state.error+")"}
+                        autoHideDuration={4000}
+                    />
+                }
             </div>
         );
     }

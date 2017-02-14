@@ -6,12 +6,18 @@ import MapsClusterIcon from '../components/MapsClusterIcon';
 import FilterLayer from '../components/filters/FilterLayer';
 import InfoMapsBox from '../components/InfoMapsBox';
 import MapPanel from '../components/MapPanel';
+import CircularProgress from 'material-ui/CircularProgress';
+import {greenA400} from 'material-ui/styles/colors';
+import Snackbar from 'material-ui/Snackbar';
 
 // API key
 import {GoogleMapsAPIkey} from '../../config/keys';
 
 // Helpers
 import getDistanceFromLatLonInKm from '../helpers/getDistanceFromLatLonInKm';
+import post from '../helpers/post';
+
+const TEMP_MAX_RADIUS = 30;
 
 const Marker = React.createClass({
     render() {
@@ -40,6 +46,8 @@ export default class Map extends React.Component {
     constructor(props){
         super(props);
         this.state = {
+            markers: [],
+            waiting: true,
             heatMapMode: true,
             supercluster: undefined,
             nw: {lat: 0, lng: 0},
@@ -52,13 +60,37 @@ export default class Map extends React.Component {
             filterRadius: {px:0, km:0},
             selectedMarkerId: -1,
             selectedIds: [],
+            error: 0,
         }
     }
     
     componentWillMount() {
-        const cl = supercluster(this.props.markers);
-        this.setState({
-            supercluster: cl
+        this._getMarkers();
+    }
+
+    _getMarkers = () =>  {
+        this.setState({waiting: true});
+        post('api/ads/coords/search/', {text: this.props.query}).then((response)=>{
+            if(response.status == 200) {
+                let rawMarkers = response.res.results;
+                const MAX_SCORE = response.res.max_score;
+                let markers = [];
+                rawMarkers.map((marker)=>{
+                    markers.push({
+                        lat: marker.geolocation.lat,
+                        lng: marker.geolocation.lon,
+                        weight: marker._score/MAX_SCORE*TEMP_MAX_RADIUS,
+                        id: marker._id,
+                    });
+                });
+                const cl = supercluster(markers);
+                this.setState({waiting: false, showResult:true, markers, error: 0,supercluster: cl});
+            } else {
+                this.setState({waiting: false, error: response.status});
+            }
+        }).catch((err)=>{
+            console.log(err);
+            this.setState({waiting: false, error: err});
         });
     }
 
@@ -149,61 +181,72 @@ export default class Map extends React.Component {
         return (
             <div className={this.state.selectedIds.length > 0 ? "googleMapOuter active":"googleMapOuter"}>
                 <div className={this.state.selectedIds.length > 0 ? "googleMapWrapper active":"googleMapWrapper"}>
-                    <GoogleMap
-                        bootstrapURLKeys={{key: GoogleMapsAPIkey, libraries: 'visualization',language: 'fr'}}
-                        yesIWantToUseGoogleMapApiInternals
-                        center={this.state.center}
-                        defaultZoom={this.props.zoom}
-                        onGoogleApiLoaded={({map, maps}) => {
-                            const styleMap = [
-                                {
-                                    featureType: "all",
-                                    stylers: [
-                                    { saturation: -80 }
-                                    ]
-                                },{
-                                    featureType: "road.arterial",
-                                    elementType: "geometry",
-                                    stylers: [
-                                    { hue: "#00ffee" },
-                                    { saturation: 50 }
-                                    ]
-                                }
-                            ];
-                            const heatmap = new maps.visualization.HeatmapLayer({
-                                data: this.props.markers.map(point => (
-                                {location: new maps.LatLng(point.lat, point.lng),
-                                weight: point.weight}))
-                            });
-                            heatmap.setMap(map);
-                            map.setOptions({styles: styleMap});
-                        }}
-                        onChange={this._onMapChange}
-                        hoverDistance={18}
-                        distanceToMouse={this._distanceToMouse}
-                        onChildClick={this._onChildClick}
-                        onClick={this._onClick}
-                        >
-                        {this._createMarkers()}
-                        {this.state.filteringCode > 0 &&
-                            <FilterLayer
-                                lat={this.state.filterCenter.lat}
-                                lng={this.state.filterCenter.lng}
-                                filter={true}
-                                radius={this.state.filterRadius.px}
-                                radiusKm={this.state.filterRadius.km}
-                                open={this.state.filteringCode == 2}
-                                restartFilter={this._restartFilter}
-                                okFilter={this._okFilter}
-                            />
-                        }
-                    </GoogleMap>
+                    {this.state.waiting ?
+                        <CircularProgress size={80} thickness={5} color={greenA400} className="loadingIndicator"/>
+                    :
+                        <GoogleMap
+                            bootstrapURLKeys={{key: GoogleMapsAPIkey, libraries: 'visualization',language: 'fr'}}
+                            yesIWantToUseGoogleMapApiInternals
+                            center={this.state.center}
+                            defaultZoom={this.props.zoom}
+                            onGoogleApiLoaded={({map, maps}) => {
+                                const styleMap = [
+                                    {
+                                        featureType: "all",
+                                        stylers: [
+                                        { saturation: -80 }
+                                        ]
+                                    },{
+                                        featureType: "road.arterial",
+                                        elementType: "geometry",
+                                        stylers: [
+                                        { hue: "#00ffee" },
+                                        { saturation: 50 }
+                                        ]
+                                    }
+                                ];
+                                const heatmap = new maps.visualization.HeatmapLayer({
+                                    data: this.state.markers.map(point => (
+                                    {location: new maps.LatLng(point.lat, point.lng),
+                                    weight: point.weight}))
+                                });
+                                heatmap.setMap(map);
+                                map.setOptions({styles: styleMap});
+                            }}
+                            onChange={this._onMapChange}
+                            hoverDistance={18}
+                            distanceToMouse={this._distanceToMouse}
+                            onChildClick={this._onChildClick}
+                            onClick={this._onClick}
+                            >
+                            {this._createMarkers()}
+                            {this.state.filteringCode > 0 &&
+                                <FilterLayer
+                                    lat={this.state.filterCenter.lat}
+                                    lng={this.state.filterCenter.lng}
+                                    filter={true}
+                                    radius={this.state.filterRadius.px}
+                                    radiusKm={this.state.filterRadius.km}
+                                    open={this.state.filteringCode == 2}
+                                    restartFilter={this._restartFilter}
+                                    okFilter={this._okFilter}
+                                />
+                            }
+                        </GoogleMap>
+                    }
                 </div>
                 {this.state.filteringCode == 0 && 
                     <InfoMapsBox label="Cliquez pour définir le centre du filtre" onClick={this._cancelFilter}/>
                 }
                 {this.state.filteringCode == 1 && 
                     <InfoMapsBox label="Cliquez pour définir le rayon de recherche" onClick={this._cancelFilter}/>
+                }
+                {this.state.error !== 0 &&
+                    <Snackbar
+                        open={true}
+                        message={"Une erreur est survenue ("+this.state.error+")"}
+                        autoHideDuration={4000}
+                    />
                 }
                 <MapPanel selectedIds={this.state.selectedIds}/>
             </div>
