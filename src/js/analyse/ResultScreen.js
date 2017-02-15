@@ -9,6 +9,7 @@ import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import FilterBar from '../components/FilterBar';
 import LocationIcon from 'material-ui/svg-icons/maps/place';
 import CalendarIcon from 'material-ui/svg-icons/action/today';
+import SkillPanelIcon from 'material-ui/svg-icons/action/class';
 
 // Helpers
 import formatPercent from '../helpers/formatPercent';
@@ -16,6 +17,9 @@ import formatDate from '../helpers/formatDate';
 
 //Result views
 import Map from './Map';
+
+// SkillPanel
+import SkillPanel from '../components/skills/SkillsPanel';
 
 
 const styles = {
@@ -36,23 +40,6 @@ const styles = {
     textTransform: 'none',
   }
 };
-
-
-const temp = (
-    <div>
-        <h3 className="center">Mots-clés</h3>
-        <div className="searchResultBar" style={styles.wrapper}>
-            <Chip backgroundColor={blue300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">NodeJS</Chip>
-            <Chip backgroundColor={indigo300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Express</Chip>
-            <Chip backgroundColor={blue300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Javascript</Chip>
-            <Chip backgroundColor={yellow500} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Management</Chip>
-            <Chip backgroundColor={amber500} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Digital marketing</Chip>
-            <Chip backgroundColor={deepOrange300} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">English</Chip>
-            <Chip backgroundColor={yellow500} style={styles.chip} onRequestDelete={handleRequestDelete} labelColor="white">Agile and Scrum</Chip>
-        </div>
-        <h3 className="center separator">Offres correspondantes</h3>
-    </div>
-);
 
 const jobsTest = [
     {
@@ -112,6 +99,7 @@ export default class ResultScreen extends React.Component {
             map: map,
             mapFiltering : {enable: false, from: 'list'},
             refreshMapKey : 0,
+            skillsPanel: false,
         };
     }
 
@@ -229,6 +217,10 @@ export default class ResultScreen extends React.Component {
         this.setState({open: !this.state.open});
     }
 
+    _toggleSkillsPanel = () => {
+        this.setState({skillsPanel: !this.state.skillsPanel});
+    }
+
     _handleMapFilter = () => {
         this.setState({open: false, value: 'map', mapFiltering: {enable: true, from: this.state.value}});
     }
@@ -264,19 +256,23 @@ export default class ResultScreen extends React.Component {
         return (
             <div className="resultScreen">
                 <div className="firstScreen">
-                    {this.props.test && temp}
                     <Tabs value={this.state.value} onChange={this._handleChange} inkBarStyle={styles.inkBar} tabItemContainerStyle={styles.tabItemContainer} tabTemplateStyle={styles.tabTemplate} className="tabs">
                         <Tab label="Liste" value="list" className="tab" buttonStyle={styles.tabLabel}></Tab>
                         <Tab label="Carte" value="map" className="tab" buttonStyle={styles.tabLabel}></Tab>
                     </Tabs>
-                    <FlatButton label="Options" className={"options hidden-xs " + this.state.open} onClick={this._toggleFilterBar}/>
+                    <FlatButton label="Compétences" className={"options hidden-xs " + this.state.skillsPanel} onClick={this._toggleSkillsPanel}/>
+                    <IconButton className="options-xs visible-xs-inline-block" onClick={this._toggleSkillsPanel}>
+                        <SkillPanelIcon />
+                    </IconButton>
+                    <FlatButton label="Filtres" className={"options hidden-xs " + this.state.open} onClick={this._toggleFilterBar}/>
                     <IconButton className="options-xs visible-xs-inline-block" onClick={this._toggleFilterBar}>
                         <ContentFilter />
                     </IconButton>
                 </div>
+                <FilterBar open={this.state.open} handleClose={this._toggleFilterBar} handleMapFilter={this._handleMapFilter} mapMode={this.state.value == 'map'}/>
                 <div className="jobOutter">
-                    <FilterBar open={this.state.open} handleClose={this._toggleFilterBar} handleMapFilter={this._handleMapFilter} mapMode={this.state.value == 'map'}/>
                     {resultView}
+                    <SkillPanel open={this.state.skillsPanel} mode={this.state.value}/>
                 </div>
             </div>
         );
