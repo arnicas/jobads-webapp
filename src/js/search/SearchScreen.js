@@ -64,7 +64,7 @@ export default class SearchScreen extends React.Component {
 
     _onSendClick = () => {
         this.setState({waiting: true});
-        post('/api/ads/search/', {text: this.state.value}).then((response)=>{
+        post('/api/ja/search/', {text: this.state.value}).then((response)=>{
             if(response.status == 200) {
                 this.setState({waiting: false, showResult:true, results:response.res.results, error: 0});
             } else {

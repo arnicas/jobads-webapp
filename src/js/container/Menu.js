@@ -113,8 +113,9 @@ export default class Menu extends React.Component {
       this.setState({open: false, altLocation: false});
       document.body.className = "body";
     };
-
-    this.setState({value: this.props.location.replace(/^\/([^\/]*).*$/, '$1')})
+    let path = this.props.location.replace(/^\/([^\/]*).*$/, '$1');
+    if (path == '') path = 'rechercher';
+    this.setState({value: path});
   }
 
   componentWillReceiveProps(nextProps){

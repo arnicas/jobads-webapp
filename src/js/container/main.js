@@ -29,7 +29,7 @@ const Main = () => (
   <MuiThemeProvider muiTheme={muiTheme}>
     <div>
       <Router history={hashHistory}>
-        <Route path="/" component={Home}/>
+        <Route path="/" component={Search}/>
         <Route path="/rechercher" component={Search}/>
         <Route path="/analyser" component={Analyse}/>
         <Route path="/a-propos" component={About}/>

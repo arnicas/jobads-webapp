@@ -68,7 +68,7 @@ export default class MapPanel extends React.Component {
             let elemLength = reset ? 0 : this.state.elements.length,
                 newElementsIds = this._buildElements(elemLength, Math.min(elemLength + 20, props.selectedIds.length), props);
             if (newElementsIds) {
-                post('/api/ads/get_basic_info', newElementsIds).then((response)=>{
+                post('/api/ja/get_basic_info', newElementsIds).then((response)=>{
                     if(response.status == 200) {
                         let rawListItems = response.res.results;
                         let newElements = [];

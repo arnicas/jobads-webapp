@@ -25,10 +25,10 @@ router.post('/cv-upload', upload.single('file'), (req, res) => {
 });
 
 //
-// POST /api/ads/search
+// POST /api/ja/search
 // Process text query
 //
-router.post('/ads/search/', (req, res) => {
+router.post('/ja/search/', (req, res) => {
     let path =  '/api/ads/search/' + encodeURI(req.body.text);
     console.log('> ads/search/'+encodeURI(req.body.text));
     https.get({
@@ -62,10 +62,10 @@ router.post('/ads/search/', (req, res) => {
 });
 
 //
-// POST /api/ads/coords/search
+// POST /api/ja/coords/search
 // Process text query
 //
-router.post('/ads/coords/search/', (req, res) => {
+router.post('/ja/coords/search/', (req, res) => {
     let path =  '/api/ads/coords/search/' + encodeURI(req.body.text);
     console.log('> ads/coords/search/'+encodeURI(req.body.text));
     https.get({
@@ -99,10 +99,10 @@ router.post('/ads/coords/search/', (req, res) => {
 });
 
 //
-// POST /api/ads/get_basic_info
+// POST /api/ja/get_basic_info
 // Process simple query
 //
-router.post('/ads/get_basic_info', (req, res) => {
+router.post('/ja/get_basic_info', (req, res) => {
     let path =  '/api/ads/get_basic_info';
     var postData = JSON.stringify(req.body);
     let options = {
