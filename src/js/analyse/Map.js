@@ -70,7 +70,7 @@ export default class Map extends React.Component {
 
     _getMarkers = () =>  {
         this.setState({waiting: true});
-        post('api/ads/coords/search/', {text: this.props.query}).then((response)=>{
+        post('api/ja/coords/search/', {text: this.props.query}).then((response)=>{
             if(response.status == 200) {
                 let rawMarkers = response.res.results;
                 const MAX_SCORE = response.res.max_score;
