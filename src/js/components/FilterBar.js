@@ -80,7 +80,7 @@ export default class FilterBar extends React.Component {
             durationLabel += " : au maximum "+(this.state.durationMax+1)+" mois";
         }
         return(
-            <div>
+            <div className="filterBarWrapper">
                 <Toolbar className={toolbarClassName}>
                     <ToolbarGroup>
                         <TypeDropdown labelStyle={styles.dropdown} iconStyle={styles.dropdownIcon}/>

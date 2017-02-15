@@ -24,12 +24,17 @@
         .tabs {
             width: 200px;
             display: inline-block;
+
+            @media (max-width: $screen-xs-max) {
+                width: 150px;
+            }
         }
 
         button.options {
             float: right;
             top: 5px;
             color: $gris500 !important;
+            margin-left: 8px !important;
 
             &.true {
                 background: $gris50 !important;
@@ -46,15 +51,24 @@
     }
 
     .jobOutter {
-        overflow-x: auto;
+        width: 100%;
+        display: flex;
+        flex-flow: row nowrap;
+
+        @media (max-width: $screen-xs-max) {
+            flex-flow: column nowrap;
+        }
+
+        @media (min-width: $screen-xs-max+1) {
+            position: relative;
+        }
     }
 
     .jobTable {
         padding: 0 5vw;
-        display: table;
+        flex: 1 1 60%;
         border-spacing: 16px 32px;
-        border-collapse: separate;
-        background: white;
+        overflow-x: auto;
 
         .jobRow {
             display: table-row;
@@ -124,6 +138,7 @@
     .jobMap {
 
         position: relative;
+        width: 100%;
 
         @media (max-width: $screen-xs-max) {
             height: 80vh;

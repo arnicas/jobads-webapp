@@ -15,8 +15,8 @@ export default class Analyse extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            file : [{name: "test"}],
-            hasFile: true,
+            file : [],
+            hasFile: false,
             error: false
         };
     }
