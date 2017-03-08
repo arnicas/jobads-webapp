@@ -1,0 +1,70 @@
+.rangeSlider {
+    position: relative;
+    height: 48px;
+    overflow-x: visible;
+    margin: 0px 36px;
+    
+
+    .rangeSliderMax {
+        position: absolute;
+        top: 0;
+
+        &>div {
+            margin-bottom: 0 !important;
+        }
+
+        &>div>div>div{
+            &:nth-child(2){
+                background: $gris200 !important;
+            }
+        
+            &:first-of-type, &:last-of-type{
+                background: $vertA400 !important;
+            }
+        }
+
+        &.disabled>div>div>div{
+        
+            &:first-of-type{
+                background: $gris200 !important;
+            }
+        }
+    }
+
+    .rangeSliderMin {
+        position: absolute;
+        top: 0;
+        width: 100%;
+
+        &>div {
+            margin-bottom: 0 !important;
+        }
+
+        &>div>div>div{
+
+            &:nth-child(2){
+                background: transparent !important;
+            }
+            &:first-of-type{
+                background: $gris200 !important;
+            }
+        
+            &:last-of-type{
+                background: $vertA400 !important;
+            }
+        }
+    }
+
+    .rangeSliderLabelContainer {
+        width: 100%;
+        display: flex;
+        flex-flow: row nowrap;
+
+        .rangeSliderLabel {
+            text-align: center;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: $gris500;
+        }
+    }
+}

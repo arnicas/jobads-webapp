@@ -3,8 +3,9 @@
 @import 'visibility';
 @import 'typo';
 @import 'utils';
-@import 'analyse/index';
-@import 'search/index';
+@import 'logo';
+@import 'jobs/index';
+@import 'container/index';
 @import 'components/index';
 
 * {
@@ -12,7 +13,7 @@
 }
 
 html {
-    @include gradient-directional($violet300, $orange500);
+    @include gradient-directional($marine300, $cyan500);
     background-attachment: fixed;
 }
 
@@ -28,7 +29,7 @@ body {
     font-size: 12px;
     text-transform: uppercase;
     padding: 4px;
-    background: $vertA200;
+    background: $vertA400;
     border-radius: 3px;
     color: white;
 }

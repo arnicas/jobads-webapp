@@ -1,0 +1,18 @@
+.mainLayout {
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100vh;
+}
+
+.refreshMessage>div>div {
+    @media (max-width: $screen-xs-max) {
+        &>span {
+            display:none;
+        }
+        &>button{
+            float: none !important;
+            margin: 6px auto !important;
+            display: block !important;
+        }
+    }
+}

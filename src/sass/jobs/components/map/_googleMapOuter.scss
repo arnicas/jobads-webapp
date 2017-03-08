@@ -1,0 +1,103 @@
+.googleMapOuter {
+    height: 100%;
+
+    .loadingIndicator {
+        width: 100% !important;
+        text-align: center;
+        margin-top: 32px;
+    }
+
+    &>div:first-of-type{
+        height: 100% !important;
+        transition: .5s cubic-bezier(0.4, 0.0, 0.2, 1) height;
+        overflow: hidden;
+
+        &>div:first-of-type{
+            min-height: 388px;
+            transition: .5s cubic-bezier(0.4, 0.0, 0.2, 1) transform;
+
+        }
+    }
+
+    @media (max-width: $screen-xs-max) {
+        height: 100%;
+
+        &.active {
+            &>div:first-of-type {
+                height: 40vh !important;
+                transition: .5s cubic-bezier(0.4, 0.0, 0.2, 1) height .2s;
+
+                &>div:first-of-type{
+                    height: 80vh !important;
+                    transform: translateY(-25%);
+                    transition: .5s cubic-bezier(0.4, 0.0, 0.2, 1) transform .2s;
+
+                }
+            }
+        }
+    }
+
+    .mapCluster {
+        transform: translate(-18px, -36px);
+        width: 36px !important;
+        height: 36px !important;
+        position: absolute;
+        transition: .3s cubic-bezier(0.165, 0.84, 0.44, 1) all;
+        transform-origin: bottom center;
+        cursor: pointer;
+
+        &.hover {
+
+            transform: translate(-18px, -36px) scale(1.3);
+
+        }
+
+        &.selected {
+
+            svg {
+                fill: url(#MyGradient3) !important;
+            }
+
+        }
+
+        svg {
+            fill: url(#MyGradient2) !important;
+            width: 36px !important;
+            height: 36px !important;
+            transition: none;
+        }
+        span {
+            position: absolute;
+            top: 8px;
+            left: 0;
+            text-align: center;
+            width: 36px;
+            text-shadow: $gris900 0 0 5px;
+            color: white;
+            font-size: 11px;
+        }
+    }
+
+    .mapMarker {
+        transform: translate(-18px, -100%);
+        fill: url(#MyGradient2) !important;
+        width: 36px !important;
+        height: 36px !important;
+        position: absolute;
+        transition: none;
+        transition: .3s cubic-bezier(0.165, 0.84, 0.44, 1) all;
+        transform-origin: bottom center;
+        cursor: pointer;
+
+        &.hover {
+
+            transform: translate(-18px, -36px) scale(1.3);
+
+        }
+
+        &.selected {
+            fill: url(#MyGradient3) !important;
+
+        }
+    }
+}
