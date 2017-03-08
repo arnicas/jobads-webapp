@@ -35,7 +35,7 @@ const styles = {
     borderRadius: 5,
     marginTop: 10,
     marginBottom: 10,
-    border: "2px solid white"
+    border: "2px solid rgba(255,255,255,.5)"
   },
   menuStyleScrolled: {
     color: grey500,
@@ -75,8 +75,8 @@ const tabs = [
 ];
 
 const menuItems = [
-  {text: "Recherche simple", value: "rechercher"},
-  {text: "Analyse de CV", value: "analyser"},
+  {text: "Accueil", value: "accueil"},
+  {text: "Emplois et stages", value: "rechercher"},
 ];
 
 let inertiaTrigger = 30;

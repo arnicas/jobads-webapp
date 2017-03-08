@@ -45,7 +45,7 @@ body {
 // overlay
 
 @mixin overlayGradient {
-    @include gradient-directional(fade-out(desaturate(darken($violet300, 30%), 15%), .6), fade-out(desaturate(darken($orange500, 30%), 15%), .6));
+    @include gradient-directional(fade-out(desaturate(darken($marine300, 30%), 15%), .6), fade-out(desaturate(darken($cyan500, 30%), 15%), .6));
 }
 
 .overlay {

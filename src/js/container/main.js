@@ -10,6 +10,7 @@ import ScrollSpy from './ScrollSpy';
 
 // Routes
 import Home from '../home';
+import Jobs from '../jobs/Jobs';
 import Search from '../search';
 import Analyse from '../analyse';
 import NotFound from '../system';
@@ -29,7 +30,7 @@ const Main = () => (
   <MuiThemeProvider muiTheme={muiTheme}>
     <div>
       <Router history={hashHistory}>
-        <Route path="/" component={Search}/>
+        <Route path="/" component={Jobs}/>
         <Route path="/rechercher" component={Search}/>
         <Route path="/analyser" component={Analyse}/>
         <Route path="/a-propos" component={About}/>

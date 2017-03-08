@@ -1,0 +1,92 @@
+.searchScreen{
+
+    flex: 0 1 130px;
+
+    .searchContainer {
+        min-height: 100vh;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        align-items: center;
+        transition: .6s cubic-bezier(0.075, 0.82, 0.165, 1) all;
+
+
+        .searchFieldContainer {
+            display: flex;
+            flex: 1 0 auto;
+            flex-flow: column nowrap;
+            align-items: flex-start;
+            margin-right: 32px;
+            max-width: 60vw;
+            color: white;
+            min-width: 500px;
+
+            @media (max-width: $screen-xs-max) {
+                min-width: 80vw;
+            }
+        }
+
+        .textField textarea:last-of-type {
+            font-size: 26px !important;
+            color: white !important;
+        }
+
+        &.active {
+            background-color: rgba(255,255,255,.5);
+
+            .textField textarea:last-of-type {
+                color: black !important;
+            }
+
+            .badge {
+                transition: .3s;
+                opacity: 0;
+            }
+
+        }
+
+        &.showResult {
+            justify-content: flex-start;
+            align-items: flex-end;
+            height: auto;
+            min-height: 130px;
+            position: relative;
+
+            .searchFieldContainer {
+                margin-left: 5vw;
+                flex-flow: row nowrap;
+                align-items: flex-end;
+
+                .textField {
+                    margin-top: 32px;
+
+                }
+
+                button {
+                    bottom: 6px;
+                }
+            }
+            
+            &.active {
+                svg {
+                    fill: black !important;
+                }
+            }
+
+        }
+
+        .waitingIndicator {
+            margin-top: -4px !important;
+            bottom: 6px;
+            left: 4px;
+
+            &.allWidth {
+                position: absolute !important;
+                height: 10px !important;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+        }
+    }
+}

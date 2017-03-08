@@ -9,6 +9,10 @@
     margin-top: 20px !important;
     margin-right: 16px;
     span {
-        color: $vertA400 !important;
+        color: $vertA700 !important;
+    }
+
+    &.visible {
+        display: inline-block !important;
     }
 }
