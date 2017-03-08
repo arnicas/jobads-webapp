@@ -9,10 +9,10 @@ import {primary500, primary700, accentA200} from '../colors';
 import ScrollSpy from './ScrollSpy';
 
 // Routes
-import Home from '../home';
+// import Home from '../home';
 import Jobs from '../jobs/Jobs';
-import Search from '../search';
-import Analyse from '../analyse';
+// import Search from '../search';
+// import Analyse from '../analyse';
 import NotFound from '../system';
 import About from '../about';
 
@@ -31,8 +31,6 @@ const Main = () => (
     <div>
       <Router history={hashHistory}>
         <Route path="/" component={Jobs}/>
-        <Route path="/rechercher" component={Search}/>
-        <Route path="/analyser" component={Analyse}/>
         <Route path="/a-propos" component={About}/>
         <Route path='*' component={NotFound} />
       </Router>
