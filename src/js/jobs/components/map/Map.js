@@ -15,6 +15,7 @@ import MapsClusterIcon from './MapsClusterIcon';
 import FilterLayer from './FilterLayer';
 import InfoMapsBox from './InfoMapsBox';
 import MapPanel from './MapPanel';
+import FilterButton from './FilterButton';
 
 // Helpers
 import getDistanceFromLatLonInKm from '../../../helpers/getDistanceFromLatLonInKm';
@@ -73,7 +74,7 @@ export default class Map extends React.Component {
 
     _getMarkers = () =>  {
         this.setState({waiting: true});
-        post('api/ja/coords/search/', {text: this.props.query}).then((response)=>{
+        post('api/ja/coords/search/', this.props.query).then((response)=>{
             if(response.status == 200) {
                 let rawMarkers = response.res.results;
                 const MAX_SCORE = response.res.max_score;
@@ -162,6 +163,10 @@ export default class Map extends React.Component {
         this.setState({filteringCode:-1, filterRadius:{px: 0, km:0}});
     }
 
+    _clearFilter = () => {
+        this.props.handleFilteringResult({}, {}, true);
+    }
+
     _onChildClick = (key, childProps) => {
         const markerId = childProps.marker.points[0].id;
         this.setState({center: {lat: childProps.marker.wy, lng: childProps.marker.wx}});
@@ -243,6 +248,12 @@ export default class Map extends React.Component {
                 }
                 {this.state.filteringCode == 1 && 
                     <InfoMapsBox label="Cliquez pour définir le rayon de recherche" onClick={this._cancelFilter}/>
+                }
+                {this.state.filteringCode < 0 && 
+                    <FilterButton onClick={this._restartFilter}/>
+                }
+                {this.state.filteringCode == -1 && this.props.query.lat &&
+                    <FilterButton cancel={true} onClick={this._clearFilter}/>
                 }
                 {this.state.error !== 0 &&
                     <Snackbar

@@ -4,6 +4,7 @@ import Snackbar from 'material-ui/Snackbar';
 
 // helpers
 import post from '../helpers/post';
+import prepareQuery from '../helpers/prepareQuery';
 
 // Screens
 import SearchScreen from './screens/SearchScreen';
@@ -22,8 +23,9 @@ export default class Jobs extends React.Component {
             waiting: false,
             showResult: false,
             needRefresh: false,
+            forceRefresh: false,
             error: 0,
-            geoFiltering: false,
+            geoFilter: {},
             mode: "list"
         };
     }
@@ -32,10 +34,17 @@ export default class Jobs extends React.Component {
     _handleError = (error) => {this.setState(error);}
     _handleQueryChange = (query) => {this.setState({query, needRefresh:{value:true, reason:"Requête modifiée"}});}
     _handleFilterChange = (newFilters) => {this.setState({filter:newFilters, needRefresh:{value:true, reason:"Filtres modifiés"}});}
+    _handleFilteringResult = (filteringCenter, filteringRadius, clear) => {
+        if (clear) {
+            this.setState({geoFilter:{}, forceRefresh: true});
+        } else {
+            this.setState({geoFilter: {lat:filteringCenter.lat, lon:filteringCenter.lng, dist:filteringRadius+'km'},forceRefresh: true});
+        }
+    }
 
     _sendQuery = () => {
-        this.setState({waiting: true});
-        post('/api/ja/search/', {text: this.state.query}).then((response)=>{
+        this.setState({waiting: true, forceRefresh: false});
+        post('/api/ja/search/', prepareQuery(this.state.query, this.state.filter, this.state.geoFilter)).then((response)=>{
             if(response.status == 200) {
                 this.setState({waiting: false, showResult:true, needRefresh:{value:false}, results:response.res.results, error: 0});
             } else {
@@ -45,6 +54,10 @@ export default class Jobs extends React.Component {
             console.log(err);
             this.setState({waiting: false, error: err});
         });
+    }
+
+    componentDidUpdate () {
+        if (this.state.forceRefresh) this._sendQuery();
     }
     
 
@@ -68,10 +81,9 @@ export default class Jobs extends React.Component {
                         results={this.state.results}
                         triggerRefresh={this.state.waiting}
                         handleFilterChange={this._handleFilterChange}
-                        query={this.state.query}
+                        query={prepareQuery(this.state.query, this.state.filter, this.state.geoFilter)}
                         filter={this.state.filter}
                         mode={this.state.mode}
-                        geoFiltering={this.state.geoFiltering}
                         handleFilteringResult={this._handleFilteringResult}
                         needRefresh={this.state.needRefresh.value}
                     />

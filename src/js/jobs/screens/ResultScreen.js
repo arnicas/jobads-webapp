@@ -38,13 +38,12 @@ export default class ResultScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        let {list, map} = this._setListAndMap(this.props.results);
+        let list = this._setList(this.props.results);
         this.state = {
             value: props.mode,
-            open: false,
+            open: true,
             list: list,
-            map: map,
-            mapFiltering : {enable: false, from: 'list'},
+            mapFiltering : {enable: false, from: 'map'},
             refreshMapKey : 0,
             skillsPanel: false,
         };
@@ -52,14 +51,14 @@ export default class ResultScreen extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if(this.props.triggerRefresh && !nextProps.triggerRefresh) {
-            this.setState(this._setListAndMap(nextProps.results));
+            this.setState(this._setList(nextProps.results));
             this.setState({refreshMapKey:this.state.refreshMapKey+1});
         }
     }
 
-    _setListAndMap = (resultsIn) => {
-        if(!resultsIn) return ({list:[],map:[]});
-        let list = [], map = [];
+    _setList = (resultsIn) => {
+        if(!resultsIn) return ([]);
+        let list = [];
         resultsIn.map((result)=>{
             list.push({
                 company: result.company,
@@ -69,16 +68,8 @@ export default class ResultScreen extends React.Component {
                 date: result.date,
                 id: result.id
             });
-            if (result.geolocation){
-                map.push({
-                    lat: result.geolocation.lat,
-                    lng: result.geolocation.lon,
-                    weight: 40,
-                    id: result._id,
-                });
-            }
         });
-        return ({list:list,map:map});
+        return (list);
     }
 
     _handleChange = (value) => {
@@ -130,13 +121,10 @@ export default class ResultScreen extends React.Component {
     _handleMapFilter = () => {
         this.setState({open: false, value: 'map', mapFiltering: {enable: true, from: this.state.value}});
     }
-    _handleFilteringResult = (filteringCenter, filteringRadius) => {
-        console.log('Promise resolve');
-        this.state.prom.resolve({filteringCenter, filteringRadius});
-    }
 
-    _handleFilteringResult = (filteringCenter, filteringRadius) => {
-        this.setState({value: this.state.mapFiltering.from, mapFiltering: {enable: false, from: 'list'}});
+    _handleFilteringResult = (filteringCenter, filteringRadius, clear) => {
+        this.setState({value: this.state.mapFiltering.from, mapFiltering: {enable: false, from: 'map'}});
+        this.props.handleFilteringResult(filteringCenter, filteringRadius, clear);
     }
 
     render () {
@@ -154,7 +142,6 @@ export default class ResultScreen extends React.Component {
                     <div className="jobMap">
                         <Map
                         key={this.state.refreshMapKey}
-                        markers={this.state.map}
                         mapFiltering={this.state.mapFiltering.enable}
                         handleFilteringResult={this._handleFilteringResult}
                         query={this.props.query}
