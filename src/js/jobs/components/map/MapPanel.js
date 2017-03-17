@@ -119,7 +119,7 @@ export default class MapPanel extends React.Component {
                             {this.state.elements}
                         </Infinite>
                     </List>
-                    <DetailPanel selectedId={-1} onClick={()=>this.setState({selectedId:-1})}/>
+                    <DetailPanel selectedId={this.state.selectedId} onClick={()=>this.setState({selectedId:-1})}/>
                 </Paper>
                 {this.state.error !== 0 &&
                     <Snackbar

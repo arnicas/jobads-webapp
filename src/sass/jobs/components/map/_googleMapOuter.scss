@@ -7,10 +7,11 @@
         margin-top: 32px;
     }
 
-    &>div:first-of-type{
+    .googleMapWrapper{
         height: 100% !important;
         transition: .5s cubic-bezier(0.4, 0.0, 0.2, 1) height;
         overflow: hidden;
+        position: relative;
 
         &>div:first-of-type{
             min-height: 388px;

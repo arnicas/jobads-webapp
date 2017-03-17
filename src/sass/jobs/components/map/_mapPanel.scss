@@ -76,9 +76,49 @@
         .detailPanel {
             flex: 1 0 100%; 
             width: 100%;
+            display: flex;
+            flex-flow: column;
 
             .appBar {
                 background: $vertA400 !important;
+                overflow-x: hidden;
+                flex: 0 0 auto;
+
+                h3 {
+                    font-size: 12px !important;
+                    color: whitesmoke;
+                    margin: 14px 0 4px;
+                    line-height: normal;
+                }
+            }
+
+
+            .info_ {
+                font-size: .8em;
+                padding: 8px 4px;
+                display: flex;
+                flex-flow: row wrap;
+                align-items: center;
+
+                svg {
+                    height: 16px !important;
+                    width: 16px !important;
+                    fill: $gris400 !important;
+                    margin-left: 8px;
+                    margin-right: 4px;
+                }
+                svg:first-of-type{
+                    margin-left: 0;
+                }
+                span {
+                    color: $gris400;
+                }
+            }
+            p{
+                color: $gris800;
+                margin: 8px 4px;
+                font-size: .8em;
+                line-height: 18px;
             }
 
 

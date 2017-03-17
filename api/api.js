@@ -92,5 +92,46 @@ router.post('/ja/get_basic_info', (req, res) => {
     postJson('/api/ads/get_basic_info', req, res);
 });
 
+//
+// GET /api/ja/get/<id>
+// Process simple query
+//
+router.get('/ja/get/:id', (req, res) => {
+    let options = {
+        hostname: 'jobads-textminer.herokuapp.com',
+        path: '/api/ads/get/'+req.params.id,
+        method: 'GET',
+        agent: false,
+    };
+    let apiReq = https.request(options, (apiRes) => {
+        console.log('> /api/ads/get/'+req.params.id+' : '+apiRes.statusCode);
+        if(apiRes.statusCode == 200) {
+            let body = '';
+            apiRes.on('data', function(d) {
+                body += d;
+            });
+            apiRes.on('end', function() {
+                // Data reception is done
+                let parsedApiRes = "";
+                try {
+                    parsedApiRes = JSON.parse(body);
+                    res.json({status: 200, res: parsedApiRes});
+                } catch (e) {
+                    console.log(e);
+                    res.json({status: 500});
+                }
+            });
+        } else {
+            console.log(req.params.id);
+            res.json({status: apiRes.statusCode});
+        }
+    });
+    
+    apiReq.on('error', (e) => {
+        console.log(e);
+    });
+    apiReq.end();
+});
+
 
 module.exports = router;

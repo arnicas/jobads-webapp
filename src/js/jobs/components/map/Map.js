@@ -242,18 +242,18 @@ export default class Map extends React.Component {
                             }
                         </GoogleMap>
                     }
+                    {this.state.filteringCode == -1 && 
+                        <FilterButton onClick={this._restartFilter}/>
+                    }
+                    {this.state.filteringCode == -1 && this.props.query.lat &&
+                        <FilterButton cancel={true} onClick={this._clearFilter}/>
+                    }
                 </div>
                 {this.state.filteringCode == 0 && 
                     <InfoMapsBox label="Cliquez pour définir le centre du filtre" onClick={this._cancelFilter}/>
                 }
                 {this.state.filteringCode == 1 && 
                     <InfoMapsBox label="Cliquez pour définir le rayon de recherche" onClick={this._cancelFilter}/>
-                }
-                {this.state.filteringCode < 0 && 
-                    <FilterButton onClick={this._restartFilter}/>
-                }
-                {this.state.filteringCode == -1 && this.props.query.lat &&
-                    <FilterButton cancel={true} onClick={this._clearFilter}/>
                 }
                 {this.state.error !== 0 &&
                     <Snackbar

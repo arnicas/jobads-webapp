@@ -88,6 +88,10 @@ const typeMenu = {
         {value: 'CDI', label: 'CDI'},
         {value: 'stage', label: 'Stage'},
         {value: 'CDD', label: 'CDD'},
+        {value: 'alternance', label: 'Alternance'},
+        {value: 'graduate-program', label: 'Graduate Program'},
+        {value: 'these', label: 'Thèse'},
+        {value: 'interim', label: 'Intérim'},
         {value: 0, label: 'Indifférent'},
     ]
 };
