@@ -78,15 +78,32 @@
         padding: 0 5vw;
         flex: 1 1 60%;
         border-spacing: 16px 32px;
-        overflow-x: auto;
+        overflow-x: hidden;
+
+        .loadingIndicator {
+            margin: 0 auto 24px;
+            width: 100% !important;
+            text-align: center;
+        }
 
         .jobRow {
-            display: table-row;
+            margin: 24px -8px;
+            padding: 8px;
+            max-width: 60vw;
+
+            @media (max-width: $screen-xs-max) {
+                max-width: 100%;
+            }
+
+            &:hover, &:active, &:focus {
+                cursor: pointer;
+                box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+            }
 
             .jobCell {
-                display: table-cell;
                 vertical-align: top;
                 font-size: .8em;
+
 
                 &.jobAvatar {
                     padding-left: 16px;
@@ -108,15 +125,25 @@
                         margin: 3px 0 3px 0;
                         font-weight: 400;
                     }
-                    p{
+                    p.jobDetails{
                         color: $gris800;
-                        max-width: 60vw;
                         margin: 4px 0;
+                        transition: .3s;
+
+                        &.closed {
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            display: -webkit-box;
+                            line-height: 14px;     /* fallback */
+                            max-height: 28px;      /* fallback */
+                            -webkit-line-clamp: 2; /* number of lines to show */
+                            -webkit-box-orient: vertical;
+                        }
                     }
                     .info {
                         display: flex;
-                        flex-flow: row wrap;
-                        align-items: center;
+                        flex-flow: row nowrap;
+                        max-height: 16px;
 
                         svg {
                             height: 16px !important;

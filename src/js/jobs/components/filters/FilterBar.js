@@ -85,9 +85,13 @@ const typeMenu = {
     label : "Type",
     default: 0,
     values : [
-        {value: 3, label: 'CDI'},
-        {value: 2, label: 'Stage'},
-        {value: 1, label: 'CDD'},
+        {value: 'CDI', label: 'CDI'},
+        {value: 'stage', label: 'Stage'},
+        {value: 'CDD', label: 'CDD'},
+        {value: 'alternance', label: 'Alternance'},
+        {value: 'graduate-program', label: 'Graduate Program'},
+        {value: 'these', label: 'Thèse'},
+        {value: 'interim', label: 'Intérim'},
         {value: 0, label: 'Indifférent'},
     ]
 };
@@ -140,18 +144,15 @@ export default class FilterBar extends React.Component {
     };
 
     componentDidUpdate(prevProps, prevState) {
-        let stateDiff = 
-            prevState.published-this.state.published
-            + prevState.salaryMin-this.state.salaryMin
-            + prevState.salaryMax-this.state.salaryMax
-            + prevState.type-this.state.type;
-        if (Math.abs(stateDiff)>0) {
-            let newFilters = {
-                salaryMin : this.state.salaryMin,
-                salaryMax : this.state.salaryMax,
-                type : this.state.type,
-                published : this.state.published,
-            }
+        if (prevState.published !== this.state.published ||
+            prevState.salaryMin !== this.state.salaryMin ||
+            prevState.salaryMax !== this.state.salaryMax ||
+            prevState.type !== this.state.type) {
+            let newFilters = {};
+            if (this.state.published !== defaultState.published) newFilters = Object.assign(newFilters,{published : this.state.published});
+            if (this.state.salaryMin !== defaultState.salaryMin) newFilters = Object.assign(newFilters,{salary_min : this.state.salaryMin*10000});
+            if (this.state.salaryMax !== defaultState.salaryMax) newFilters = Object.assign(newFilters,{salary_max : this.state.salaryMax*10000});
+            if (this.state.type !== defaultState.type) newFilters = Object.assign(newFilters,{jobtype : this.state.type});
             this.props.handleChange(newFilters);
         }
     }

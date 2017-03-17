@@ -62,7 +62,7 @@ export default class SearchScreen extends React.Component {
     }
 
     _onTextInput = (event, newValue) => {
-        this.props.onQueryChange({query: newValue});
+        this.props.onQueryChange(newValue);
     }
 
     _handleTextFieldKeyDown = event => {

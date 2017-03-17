@@ -6,18 +6,22 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import ContentFilter from 'material-ui/svg-icons/content/filter-list';
-import LocationIcon from 'material-ui/svg-icons/maps/place';
-import CalendarIcon from 'material-ui/svg-icons/action/today';
 import SkillPanelIcon from 'material-ui/svg-icons/action/class';
+import CircularProgress from 'material-ui/CircularProgress';
+import Snackbar from 'material-ui/Snackbar';
 
 // Helpers
-import formatPercent from '../../helpers/formatPercent';
-import formatDate from '../../helpers/formatDate';
+import post from '../../helpers/post';
 
 // App
 import FilterBar from '../components/filters/FilterBar';
 import Map from '../components/map/Map';
 import SkillPanel from '../components/skills/SkillsPanel';
+import Item from '../components/list/Item';
+
+
+// Infinite
+import Infinite from 'react-infinite';
 
 const styles = {
   inkBar: {
@@ -38,28 +42,29 @@ export default class ResultScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        let {list, map} = this._setListAndMap(this.props.results);
+        let list = this._setList(this.props.results);
         this.state = {
             value: props.mode,
             open: false,
             list: list,
-            map: map,
-            mapFiltering : {enable: false, from: 'list'},
+            mapFiltering : {enable: false, from: 'map'},
             refreshMapKey : 0,
             skillsPanel: false,
+            isInfiniteLoading: false,
+            error: 0,
         };
     }
 
     componentWillReceiveProps(nextProps) {
         if(this.props.triggerRefresh && !nextProps.triggerRefresh) {
-            this.setState(this._setListAndMap(nextProps.results));
+            this.setState({list:this._setList(nextProps.results), endReached:false});
             this.setState({refreshMapKey:this.state.refreshMapKey+1});
         }
     }
 
-    _setListAndMap = (resultsIn) => {
-        if(!resultsIn) return ({list:[],map:[]});
-        let list = [], map = [];
+    _setList = (resultsIn) => {
+        if(!resultsIn) return ([]);
+        let list = [];
         resultsIn.map((result)=>{
             list.push({
                 company: result.company,
@@ -67,18 +72,11 @@ export default class ResultScreen extends React.Component {
                 description_fr: result.description_fr,
                 location: result.location,
                 date: result.date,
-                id: result.id
+                id: result.id,
+                error: 0,
             });
-            if (result.geolocation){
-                map.push({
-                    lat: result.geolocation.lat,
-                    lng: result.geolocation.lon,
-                    weight: 40,
-                    id: result._id,
-                });
-            }
         });
-        return ({list:list,map:map});
+        return (list);
     }
 
     _handleChange = (value) => {
@@ -102,19 +100,7 @@ export default class ResultScreen extends React.Component {
         }
         return jobs_.map((job)=>{
             return (
-                <div className="jobRow" key={job.id}>
-                    <div className="jobCell jobDescription">
-                        <h3>{job.company}</h3>
-                        <h4>{job.title_fr}</h4>
-                        <p>{job.description_fr.length > 155 ? job.description_fr.substring(0,155)+"..." : job.description_fr}</p>
-                        <div className="info">
-                            <LocationIcon/>
-                            <span>{job.location}</span>
-                            <CalendarIcon/>
-                            <span>{"Publié le "+formatDate(job.date)}</span>
-                        </div>
-                    </div>
-                </div>
+                <Item key={job.id} job={job}/>
             );
         });
     }
@@ -130,23 +116,69 @@ export default class ResultScreen extends React.Component {
     _handleMapFilter = () => {
         this.setState({open: false, value: 'map', mapFiltering: {enable: true, from: this.state.value}});
     }
-    _handleFilteringResult = (filteringCenter, filteringRadius) => {
-        console.log('Promise resolve');
-        this.state.prom.resolve({filteringCenter, filteringRadius});
+
+    _handleFilteringResult = (filteringCenter, filteringRadius, clear) => {
+        this.setState({value: this.state.mapFiltering.from, mapFiltering: {enable: false, from: 'map'}});
+        this.props.handleFilteringResult(filteringCenter, filteringRadius, clear);
     }
 
-    _handleFilteringResult = (filteringCenter, filteringRadius) => {
-        this.setState({value: this.state.mapFiltering.from, mapFiltering: {enable: false, from: 'list'}});
+    _handleInfiniteLoad = () => {
+        if(this.state.endReached || this.state.error !== 0) return;
+        console.log(this.state.list.length+' objects loaded, loading 20 more. isInfiniteLoading:'+this.state.isInfiniteLoading);
+        this.setState({
+            isInfiniteLoading: true,
+        });
+        post('/api/ja/search/', Object.assign({},this.props.query,{limit:20, offset:this.state.list.length})).then((response)=>{
+            if(response.status == 200) {
+                let rawListItems = response.res.results;
+                let newList = this._setList(rawListItems);
+                this.setState({
+                    isInfiniteLoading: false,
+                    list: this.state.list.concat(newList),
+                    error: 0
+                });
+                if (response.res.results.length<20) {
+                    this.setState({endReached : true});
+                }
+            } else {
+                this.setState({isInfiniteLoading: false, error: response.status});
+            }
+        }).catch((err)=>{
+            console.log(err);
+            this.setState({isInfiniteLoading: false, error: err});
+        });
     }
 
     render () {
         let resultView = '';
+        let end = '';
+        if(this.state.endReached) {
+            switch(this.state.list.length) {
+                case(0):
+                    break;
+                case(1):
+                    end = "1 résultat.";
+                    break;
+                default:
+                    end = this.state.list.length+" résultats.";
+            }
+        }
         switch(this.state.value) {
             case('list'):
                 resultView = (
-                    <div className="jobTable">
+                    <Infinite
+                    className="jobTable"
+                    useWindowAsScrollContainer={true}
+                    elementHeight={132}
+                    infiniteLoadBeginEdgeOffset={200}
+                    onInfiniteLoad={this._handleInfiniteLoad}
+                    loadingSpinnerDelegate={this.state.isInfiniteLoading &&
+                        <CircularProgress color={greenA400} className="loadingIndicator"/>
+                    }
+                    isInfiniteLoading={this.state.isInfiniteLoading}
+                    >
                         {this._mapJobs()}
-                    </div>
+                    </Infinite>
                 );
                 break;
             case('map'):
@@ -154,7 +186,6 @@ export default class ResultScreen extends React.Component {
                     <div className="jobMap">
                         <Map
                         key={this.state.refreshMapKey}
-                        markers={this.state.map}
                         mapFiltering={this.state.mapFiltering.enable}
                         handleFilteringResult={this._handleFilteringResult}
                         query={this.props.query}
@@ -183,6 +214,15 @@ export default class ResultScreen extends React.Component {
                     {resultView}
                     <SkillPanel open={this.state.skillsPanel} mode={this.state.value}/>
                 </div>
+                {this.state.error !== 0 &&
+                    <Snackbar
+                        open={true}
+                        message={"Une erreur est survenue ("+this.state.error+")"}
+                        autoHideDuration={-1}
+                        action="Réessayer"
+                        onActionTouchTap={()=>{this.setState({error:0})}}
+                    />
+                }
             </div>
         );
     }

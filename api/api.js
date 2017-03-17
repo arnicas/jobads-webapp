@@ -5,6 +5,50 @@ let https = require('https');
 
 let upload = multer({limits: {fileSize: 2000000}});
 
+let postJson = (path, req, res) => {
+    var postData = JSON.stringify(req.body);
+    let options = {
+        hostname: 'jobads-textminer.herokuapp.com',
+        path: path,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(postData)
+        },
+        agent: false,
+    };
+    let apiReq = https.request(options, (apiRes) => {// Continuously update stream with data
+        console.log('> '+path+' : '+apiRes.statusCode);
+        if(apiRes.statusCode == 200) {
+            let body = '';
+            apiRes.on('data', function(d) {
+                body += d;
+            });
+            apiRes.on('end', function() {
+                // Data reception is done
+                let parsedApiRes = "";
+                try {
+                    parsedApiRes = JSON.parse(body);
+                    res.json({status: 200, res: parsedApiRes});
+                } catch (e) {
+                    console.log(e);
+                    res.json({status: 500});
+                }
+            });
+        } else {
+            console.log(postData);
+            res.json({status: apiRes.statusCode});
+        }
+    });
+    
+    apiReq.on('error', (e) => {
+        console.log(e);
+    });
+
+    apiReq.write(postData);
+    apiReq.end();
+}
+
 //
 // POST /api/cv-upload
 // Process CV
@@ -29,36 +73,7 @@ router.post('/cv-upload', upload.single('file'), (req, res) => {
 // Process text query
 //
 router.post('/ja/search/', (req, res) => {
-    let path =  '/api/ads/search/' + encodeURI(req.body.text);
-    console.log('> ads/search/'+encodeURI(req.body.text));
-    https.get({
-        hostname: 'jobads-textminer.herokuapp.com',
-        path: path,
-        agent: false  // create a new agent just for this one request
-    }, (apiRes) => {// Continuously update stream with data
-        console.log(' : '+apiRes.statusCode);
-        if(apiRes.statusCode == 200) {
-            let body = '';
-            apiRes.on('data', function(d) {
-                body += d;
-            });
-            apiRes.on('end', function() {
-                // Data reception is done
-                let parsedApiRes = "";
-                try {
-                    parsedApiRes = JSON.parse(body);
-                    res.json({status: 200, res: parsedApiRes});
-                } catch (e) {
-                    console.log(e);
-                    res.json({status: 500});
-                }
-            });
-        } else {
-            res.json({status: apiRes.statusCode});
-        }
-    }).on('error', (e) => {
-        console.log(e);
-    });
+    postJson('/api/ads/search', req, res);
 });
 
 //
@@ -66,36 +81,7 @@ router.post('/ja/search/', (req, res) => {
 // Process text query
 //
 router.post('/ja/coords/search/', (req, res) => {
-    let path =  '/api/ads/coords/search/' + encodeURI(req.body.text);
-    console.log('> ads/coords/search/'+encodeURI(req.body.text));
-    https.get({
-        hostname: 'jobads-textminer.herokuapp.com',
-        path: path,
-        agent: false  // create a new agent just for this one request
-    }, (apiRes) => {// Continuously update stream with data
-        console.log(' : '+apiRes.statusCode);
-        if(apiRes.statusCode == 200) {
-            let body = '';
-            apiRes.on('data', function(d) {
-                body += d;
-            });
-            apiRes.on('end', function() {
-                // Data reception is done
-                let parsedApiRes = "";
-                try {
-                    parsedApiRes = JSON.parse(body);
-                    res.json({status: 200, res: parsedApiRes});
-                } catch (e) {
-                    console.log(e);
-                    res.json({status: 500});
-                }
-            });
-        } else {
-            res.json({status: apiRes.statusCode});
-        }
-    }).on('error', (e) => {
-        console.log(e);
-    });
+    postJson('/api/ads/coords/search', req, res);
 });
 
 //
@@ -103,21 +89,22 @@ router.post('/ja/coords/search/', (req, res) => {
 // Process simple query
 //
 router.post('/ja/get_basic_info', (req, res) => {
-    let path =  '/api/ads/get_basic_info';
-    var postData = JSON.stringify(req.body);
+    postJson('/api/ads/get_basic_info', req, res);
+});
+
+//
+// GET /api/ja/get/<id>
+// Process simple query
+//
+router.get('/ja/get/:id', (req, res) => {
     let options = {
         hostname: 'jobads-textminer.herokuapp.com',
-        path: path,
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(postData)
-        },
+        path: '/api/ads/get/'+req.params.id,
+        method: 'GET',
         agent: false,
     };
-    console.log('> ads/get_basic_info', postData);
-    let apiReq = https.request(options, (apiRes) => {// Continuously update stream with data
-        console.log(' : '+apiRes.statusCode);
+    let apiReq = https.request(options, (apiRes) => {
+        console.log('> /api/ads/get/'+req.params.id+' : '+apiRes.statusCode);
         if(apiRes.statusCode == 200) {
             let body = '';
             apiRes.on('data', function(d) {
@@ -135,6 +122,7 @@ router.post('/ja/get_basic_info', (req, res) => {
                 }
             });
         } else {
+            console.log(req.params.id);
             res.json({status: apiRes.statusCode});
         }
     });
@@ -142,8 +130,6 @@ router.post('/ja/get_basic_info', (req, res) => {
     apiReq.on('error', (e) => {
         console.log(e);
     });
-
-    apiReq.write(postData);
     apiReq.end();
 });
 
