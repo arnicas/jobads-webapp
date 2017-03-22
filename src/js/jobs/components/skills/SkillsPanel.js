@@ -52,7 +52,7 @@ export default class SkillsPanel extends React.Component {
             waiting: false,
             openDeletedPopover : false,
             openDocPopover : false,
-            skillsOwned : [{key:"a", label:"testOwn1", origin: "owned"}, {key:"b", label:"testOwn2", origin: "owned"}],
+            skillsOwned : [],
             skillsDismissed: [],
             skillsSuggested: [{key:"e", label:"testSug1", origin: "suggested"}, {key:"f", label:"testSug2", origin: "suggested"}],
             addSkillField : "",
@@ -134,9 +134,34 @@ export default class SkillsPanel extends React.Component {
             this.setState({addSkillField: ""});
             return;
         }
+        for(let skill of this.state.skillsOwned) {
+            if(skill.key == this.state.addSkillField.replace(/ /g,'')) {
+                return;
+            };
+        }
         this.skillsOwned = this.state.skillsOwned;
         this.skillsOwned.push(skillToAdd);
         this.setState({skillsOwned: this.skillsOwned, addSkillField: ""});
+    }
+
+    _handleAddOwnedSkill = (label, score) => {
+        let key = label.replace(/ /g,'');
+        for(let skill of this.state.skillsOwned) {
+            if(skill.key == key) return;
+        }
+        let skillToAdd = {
+            key:key,
+            label:label,
+            origin: "owned",
+            opacity: Math.max(score/10,.4)
+        }
+        if (skillToAdd.key.length == 0) {
+            this.setState({addSkillField: ""});
+            return;
+        }
+        this.skillsOwned = this.state.skillsOwned;
+        this.skillsOwned.push(skillToAdd);
+        this.setState({skillsOwned: this.skillsOwned});
     }
 
     _handleTextFieldKeyDown = event => {
@@ -148,8 +173,6 @@ export default class SkillsPanel extends React.Component {
     }
 
     _handleDrop = (acceptedFiles, rejectedFiles) => {
-        console.log('Accepted files: ', acceptedFiles);
-        console.log('Rejected files: ', rejectedFiles);
         if (acceptedFiles.length == 1) {
             this.setState({
                 file: acceptedFiles,
@@ -159,7 +182,9 @@ export default class SkillsPanel extends React.Component {
             });
             postSingleFile('/api/cv-upload', acceptedFiles).then((response)=>{
                 this.setState({waiting: false});
-                console.log(response);
+                for(let skill of response.res) {
+                    this._handleAddOwnedSkill(skill[0],skill[1]);
+                }
             })
             .catch((err)=>{
                 console.log("Erreur :" + err);
@@ -200,6 +225,12 @@ export default class SkillsPanel extends React.Component {
     _handleNewDoc = () => {
         this._handleDrop([],[]);
         this.setState({openDocPopover:false});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.open) {
+            this.textInput.focus();
+        }
     }
 
 
@@ -261,6 +292,7 @@ export default class SkillsPanel extends React.Component {
                         onKeyDown={this._handleTextFieldKeyDown}
                         onChange={this._handleChange}
                         value={this.state.addSkillField}
+                        ref={(TextField) => { this.textInput = TextField; }}
                         />
                         {this.state.addSkillField.length > 0 &&
                             <IconButton onTouchTap={this._handleAddCustomSkill}>

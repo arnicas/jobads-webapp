@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../container/Layout';
 import Snackbar from 'material-ui/Snackbar';
+import {HotKeys} from 'react-hotkeys';
 
 // helpers
 import post from '../helpers/post';
@@ -9,7 +10,6 @@ import prepareQuery from '../helpers/prepareQuery';
 // Screens
 import SearchScreen from './screens/SearchScreen';
 import ResultScreen from './screens/ResultScreen';
-
 
 export default class Jobs extends React.Component {
 
@@ -28,6 +28,19 @@ export default class Jobs extends React.Component {
             geoFilter: {},
             mode: "list"
         };
+    }
+
+    componentDidMount() {
+        window.addEventListener("keydown", (e)=>{
+            if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) { 
+                e.preventDefault();
+                if(this.state.showResult) this.ResultScreen.toggleSkillsPanel();
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("keydown");
     }
 
     _setSkills = (skills) => {this.setState(skills);}
@@ -78,6 +91,7 @@ export default class Jobs extends React.Component {
                 
                 {this.state.showResult &&
                     <ResultScreen
+                        ref={(ResultScreen) => { this.ResultScreen = ResultScreen; }}
                         results={this.state.results}
                         triggerRefresh={this.state.waiting}
                         handleFilterChange={this._handleFilterChange}

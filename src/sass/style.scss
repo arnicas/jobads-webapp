@@ -77,3 +77,7 @@ span.indicator {
     min-height: 100vh;
     @include gradient-vertical(white, $gris50);
 }
+
+.hotKeys {
+    outline: none !important;
+}

@@ -96,15 +96,25 @@ const typeMenu = {
     ]
 };
 
+const NOW = new Date(Date.now());
+let twoMonthsAgo = new Date(NOW);
+twoMonthsAgo.setMonth(twoMonthsAgo.getMonth()-2);
+let oneMonthsAgo = new Date(NOW);
+oneMonthsAgo.setMonth(oneMonthsAgo.getMonth()-1);
+let sevenDaysAgo = new Date(NOW);
+sevenDaysAgo.setDate(sevenDaysAgo.getDate()-7);
+let yesterday = new Date(NOW);
+yesterday.setDate(yesterday.getDate()-1);
+
 const publishedMenu = {
-    filter: "beginning",
+    filter: "from",
     label : "Date de publication",
     default: 0,
     values : [
-        {value: 4, label: 'Il y a 2 mois'},
-        {value: 3, label: 'Il y a 1 mois'},
-        {value: 2, label: 'Cette semaine'},
-        {value: 1, label: 'Dernières 24 heures'},
+        {value: twoMonthsAgo, label: 'Il y a 2 mois'},
+        {value: oneMonthsAgo, label: 'Il y a 1 mois'},
+        {value: sevenDaysAgo, label: 'Cette semaine'},
+        {value: yesterday, label: 'Dernières 24 heures'},
         {value: 0, label: 'Indifférent'},
     ]
 };
@@ -149,7 +159,7 @@ export default class FilterBar extends React.Component {
             prevState.salaryMax !== this.state.salaryMax ||
             prevState.type !== this.state.type) {
             let newFilters = {};
-            if (this.state.published !== defaultState.published) newFilters = Object.assign(newFilters,{published : this.state.published});
+            if (this.state.published !== defaultState.published) newFilters = Object.assign(newFilters,{from_date : this.state.published});
             if (this.state.salaryMin !== defaultState.salaryMin) newFilters = Object.assign(newFilters,{salary_min : this.state.salaryMin*10000});
             if (this.state.salaryMax !== defaultState.salaryMax) newFilters = Object.assign(newFilters,{salary_max : this.state.salaryMax*10000});
             if (this.state.type !== defaultState.type) newFilters = Object.assign(newFilters,{jobtype : this.state.type});

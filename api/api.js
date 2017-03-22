@@ -61,7 +61,7 @@ router.post('/cv-upload', upload.single('file'), (req, res) => {
     pdfParser.on("pdfParser_dataReady", pdfData => {
         //console.log(JSON.stringify(pdfData));
         let pdfParsed = pdfParser.getRawTextContent();
-        res.json({text: pdfParsed});
+        postJson('/api/skills/extract/cv', {body:{text_content: pdfParsed}}, res);
     });
 
     pdfParser.parseBuffer(req.file.buffer);

@@ -25,12 +25,15 @@ export default class SkillsList extends React.Component {
                 className += " added";
                 break;
         }
+        let style= {};
+        if(data.opacity) Object.assign(style,{opacity:data.opacity});
         if (this.props.trash) {
             return (
                 <Chip
                     key={data.key}
                     onTouchTap={() => this.props.handleRequestDelete(data.key)}
                     className={className}
+                    style={style}
                 >
                     <Avatar icon={<RestoreIcon />} />
                     {data.label}
@@ -43,6 +46,7 @@ export default class SkillsList extends React.Component {
                     onTouchTap={() => this.props.handleRequestAdd(data.key)}
                     onRequestDelete={() => this.props.handleRequestDelete(data.key)}
                     className={className}
+                    style={style}
                 >
                     <Avatar icon={<AddIcon />} />
                     {data.label}
@@ -54,6 +58,7 @@ export default class SkillsList extends React.Component {
                     key={data.key}
                     onRequestDelete={() => this.props.handleRequestDelete(data.key)}
                     className={className}
+                    style={style}
                 >
                     {data.label}
                 </Chip>
