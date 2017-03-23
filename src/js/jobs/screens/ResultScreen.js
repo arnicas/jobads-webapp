@@ -49,9 +49,10 @@ export default class ResultScreen extends React.Component {
             list: list,
             mapFiltering : {enable: false, from: 'map'},
             refreshMapKey : 0,
-            skillsPanel: false,
+            skillsPanel: true, //TOCHANGE
             isInfiniteLoading: false,
             error: 0,
+            skillsList: []
         };
     }
 
@@ -100,7 +101,7 @@ export default class ResultScreen extends React.Component {
         }
         return jobs_.map((job)=>{
             return (
-                <Item key={job.id} job={job}/>
+                <Item key={job.id} job={job} skillsList={this.state.skillsList}/>
             );
         });
     }
@@ -109,7 +110,7 @@ export default class ResultScreen extends React.Component {
         this.setState({open: !this.state.open});
     }
 
-    _toggleSkillsPanel = () => {
+    toggleSkillsPanel = () => {
         this.setState({skillsPanel: !this.state.skillsPanel});
     }
 
@@ -120,6 +121,12 @@ export default class ResultScreen extends React.Component {
     _handleFilteringResult = (filteringCenter, filteringRadius, clear) => {
         this.setState({value: this.state.mapFiltering.from, mapFiltering: {enable: false, from: 'map'}});
         this.props.handleFilteringResult(filteringCenter, filteringRadius, clear);
+    }
+
+    _handleKeyPress = (event) => {
+        if(event.keyCode === 114 || (event.ctrlKey && event.keyCode === 70)){
+            console.log('enter CTRL-F here! ')
+        }
     }
 
     _handleInfiniteLoad = () => {
@@ -147,6 +154,10 @@ export default class ResultScreen extends React.Component {
             console.log(err);
             this.setState({isInfiniteLoading: false, error: err});
         });
+    }
+
+    _handleSkillsSearching = (skillsList) => {
+        this.setState({skillsList});
     }
 
     render () {
@@ -194,14 +205,14 @@ export default class ResultScreen extends React.Component {
                 );
         }
         return (
-            <div className={"resultScreen "+this.state.value}>
+            <div className={"resultScreen "+this.state.value} onKeyPress={this._handleKeyPress}>
                 <div className="firstScreen">
                     <Tabs value={this.state.value} onChange={this._handleChange} inkBarStyle={styles.inkBar} tabItemContainerStyle={styles.tabItemContainer} tabTemplateStyle={styles.tabTemplate} className="tabs">
                         <Tab label="Liste" value="list" className="tab" buttonStyle={styles.tabLabel}></Tab>
                         <Tab label="Carte" value="map" className="tab" buttonStyle={styles.tabLabel}></Tab>
                     </Tabs>
-                    <FlatButton label="Compétences" className={"options hidden-xs " + this.state.skillsPanel} onClick={this._toggleSkillsPanel}/>
-                    <IconButton className="options-xs visible-xs-inline-block" onClick={this._toggleSkillsPanel}>
+                    <FlatButton label="Compétences" className={"options hidden-xs " + this.state.skillsPanel} onClick={this.toggleSkillsPanel}/>
+                    <IconButton className="options-xs visible-xs-inline-block" onClick={this.toggleSkillsPanel}>
                         <SkillPanelIcon />
                     </IconButton>
                     <FlatButton label="Filtres" className={"options hidden-xs " + this.state.open} onClick={this._toggleFilterBar}/>
@@ -212,7 +223,7 @@ export default class ResultScreen extends React.Component {
                 <FilterBar filter={this.props.filter} open={this.state.open} handleClose={this._toggleFilterBar} handleMapFilter={this._handleMapFilter} mode={this.state.value} handleChange={this.props.handleFilterChange}/>
                 <div className="jobOutter">
                     {resultView}
-                    <SkillPanel open={this.state.skillsPanel} mode={this.state.value}/>
+                    <SkillPanel open={this.state.skillsPanel} mode={this.state.value} setSkillsSearch={this._handleSkillsSearching}/>
                 </div>
                 {this.state.error !== 0 &&
                     <Snackbar

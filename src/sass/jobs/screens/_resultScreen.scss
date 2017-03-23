@@ -114,10 +114,23 @@
                 }
 
                 &.jobDescription {
-                    h3 {
-                        font-size: 12px !important;
-                        color: $gris400;
-                        margin: 4px 0;
+                    .jobTitle{
+
+                        h3 {
+                            font-size: 12px !important;
+                            color: $gris400;
+                            margin: 4px 0;
+                            display: inline;
+                        }
+
+                        .jobSkill {
+                            font-size: 12px !important;
+                            color: $gris400;
+                            margin: -3px 0px -3px 5px;
+                            padding: 2px 5px;
+                            border: 1px solid $gris400;
+                            border-radius: 10px;
+                        }
                     }
                     h4 {
                         font-size: 15px !important;

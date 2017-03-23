@@ -16,6 +16,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 // App
 import SkillsList from './SkillsList';
+import SkillScatter from './SkillScatter';
 
 // Helper
 import formatOctet from '../../../helpers/formatOctet';
@@ -52,7 +53,7 @@ export default class SkillsPanel extends React.Component {
             waiting: false,
             openDeletedPopover : false,
             openDocPopover : false,
-            skillsOwned : [{key:"a", label:"testOwn1", origin: "owned"}, {key:"b", label:"testOwn2", origin: "owned"}],
+            skillsOwned : [],
             skillsDismissed: [],
             skillsSuggested: [{key:"e", label:"testSug1", origin: "suggested"}, {key:"f", label:"testSug2", origin: "suggested"}],
             addSkillField : "",
@@ -97,6 +98,8 @@ export default class SkillsPanel extends React.Component {
         const skillToDelete = this.skillsOwned.map((skill) => skill.key).indexOf(key);
         this.skillsDismissed.push(this.skillsOwned.splice(skillToDelete, 1)[0]);
         this.setState({skillsOwned: this.skillsOwned, skillsDismissed: this.skillsDismissed});
+        this.props.setSkillsSearch(this.skillsOwned.map((skill)=>{return skill.label}));
+
     }
 
     _handleRequestSkillsDismissedDelete = (key) => {
@@ -106,6 +109,7 @@ export default class SkillsPanel extends React.Component {
         this.skillsOwned.push(this.skillsDismissed.splice(skillToDelete, 1)[0]);
         this.setState({skillsOwned: this.skillsOwned, skillsDismissed: this.skillsDismissed});
         if (this.skillsDismissed.length == 0) this.setState({openDeletedPopover: false});
+        this.props.setSkillsSearch(this.skillsOwned.map((skill)=>{return skill.label}));
     }
 
     _handleRequestSkillsSuggestedDelete = (key) => {
@@ -116,12 +120,17 @@ export default class SkillsPanel extends React.Component {
         this.setState({skillsSuggested: this.skillsSuggested, skillsDismissed: this.skillsDismissed});
     }
 
-    _handleRequestSkillsSuggestedAdd = (key) => {
-        this.skillsSuggested = this.state.skillsSuggested;
+    _handleAddSuggestedSkill = (e) => {
+        let label = e.target.getAttribute('data-value').replace(/ /g,'');
         this.skillsOwned = this.state.skillsOwned;
-        const skillToDelete = this.skillsSuggested.map((skill) => skill.key).indexOf(key);
-        this.skillsOwned.push(this.skillsSuggested.splice(skillToDelete, 1)[0]);
-        this.setState({skillsSuggested: this.skillsSuggested, skillsOwned: this.skillsOwned});
+        for(let skill of this.state.skillsOwned) {
+            if(skill.key == label) {
+                return;
+            };
+        }
+        this.skillsOwned.push({key:label, label:label, origin: "suggested"});
+        this.setState({skillsOwned: this.skillsOwned});
+        this.props.setSkillsSearch(this.skillsOwned.map((skill)=>{return skill.label}));
     }
 
     _handleAddCustomSkill = () => {
@@ -134,9 +143,36 @@ export default class SkillsPanel extends React.Component {
             this.setState({addSkillField: ""});
             return;
         }
+        for(let skill of this.state.skillsOwned) {
+            if(skill.key == this.state.addSkillField.replace(/ /g,'')) {
+                return;
+            };
+        }
         this.skillsOwned = this.state.skillsOwned;
         this.skillsOwned.push(skillToAdd);
         this.setState({skillsOwned: this.skillsOwned, addSkillField: ""});
+        this.props.setSkillsSearch(this.skillsOwned.map((skill)=>{return skill.label}));
+    }
+
+    _handleAddOwnedSkill = (label, score) => {
+        let key = label.replace(/ /g,'');
+        for(let skill of this.state.skillsOwned) {
+            if(skill.key == key) return;
+        }
+        let skillToAdd = {
+            key:key,
+            label:label,
+            origin: "owned",
+            opacity: Math.max(score/10,.4)
+        }
+        if (skillToAdd.key.length == 0) {
+            this.setState({addSkillField: ""});
+            return;
+        }
+        this.skillsOwned = this.state.skillsOwned;
+        this.skillsOwned.push(skillToAdd);
+        this.setState({skillsOwned: this.skillsOwned});
+        this.props.setSkillsSearch(this.skillsOwned.map((skill)=>{return skill.label}));
     }
 
     _handleTextFieldKeyDown = event => {
@@ -148,8 +184,6 @@ export default class SkillsPanel extends React.Component {
     }
 
     _handleDrop = (acceptedFiles, rejectedFiles) => {
-        console.log('Accepted files: ', acceptedFiles);
-        console.log('Rejected files: ', rejectedFiles);
         if (acceptedFiles.length == 1) {
             this.setState({
                 file: acceptedFiles,
@@ -159,7 +193,9 @@ export default class SkillsPanel extends React.Component {
             });
             postSingleFile('/api/cv-upload', acceptedFiles).then((response)=>{
                 this.setState({waiting: false});
-                console.log(response);
+                for(let skill of response.res) {
+                    this._handleAddOwnedSkill(skill[0],skill[1]);
+                }
             })
             .catch((err)=>{
                 console.log("Erreur :" + err);
@@ -189,6 +225,8 @@ export default class SkillsPanel extends React.Component {
             skillsOwned: this.state.skillsOwned.filter(originIsNotOwned),
             skillsDismissed: this.state.skillsDismissed.filter(originIsNotOwned),
             openDocPopover:false});
+            
+        this.props.setSkillsSearch(this.state.skillsOwned.filter(originIsNotOwned).map((skill)=>{return skill.label}));
     }
     
     _handleChange = (event) => {
@@ -200,6 +238,12 @@ export default class SkillsPanel extends React.Component {
     _handleNewDoc = () => {
         this._handleDrop([],[]);
         this.setState({openDocPopover:false});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.open) {
+            this.textInput.focus();
+        }
     }
 
 
@@ -261,6 +305,7 @@ export default class SkillsPanel extends React.Component {
                         onKeyDown={this._handleTextFieldKeyDown}
                         onChange={this._handleChange}
                         value={this.state.addSkillField}
+                        ref={(TextField) => { this.textInput = TextField; }}
                         />
                         {this.state.addSkillField.length > 0 &&
                             <IconButton onTouchTap={this._handleAddCustomSkill}>
@@ -291,10 +336,15 @@ export default class SkillsPanel extends React.Component {
                             <div><FlatButton label="Extraire des compétences d'un nouveau fichier" onClick={this._handleNewDoc}/></div>
                             <div><FlatButton label="Supprimer toutes les compétences extraites" onClick={this._handleDeleteAllOwned}/></div>
                         </Popover>
-                        {this.state.skillsSuggested.length>0 &&
-                            <h4>Suggestions de compétences d'après les résultats de recherche</h4>
+                        {this.state.skillsOwned.length>0 &&
+                            <div>
+                                <h4>Suggestions de compétences d'après les résultats de recherche</h4>
+                                <div id="skillScatter">
+                                    <SkillScatter skills={this.state.skillsOwned} width={200} margin={{top: 5, right: 5, bottom: 0, left: 5}}
+                                    addSkill={this._handleAddSuggestedSkill}/>
+                                </div>
+                            </div>  
                         }
-                        <SkillsList skills={this.state.skillsSuggested} handleRequestDelete={this._handleRequestSkillsSuggestedDelete} suggestions handleRequestAdd={this._handleRequestSkillsSuggestedAdd}/>
                     </Paper>
                 </DropZone>
             </div>

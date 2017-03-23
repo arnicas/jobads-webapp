@@ -1,0 +1,15 @@
+#skillScatter {
+    margin: 0 -16px -8px;
+    background: #fafafa;
+    svg {
+        margin-bottom: -4px;
+        .grid {
+            path {
+                stroke: transparent;
+            }
+            line {
+                stroke: #efefef;
+            }
+        }
+    }
+}
