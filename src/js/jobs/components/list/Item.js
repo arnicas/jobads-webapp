@@ -18,11 +18,29 @@ export default class Item extends React.Component {
         this.setState({open: !this.state.open});
     }
 
+    _getSkills = (skills)=>{
+        return skills.filter((skill)=>{
+            return this.props.job.description_fr.search(new RegExp(skill.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i"))>-1;
+        });
+    }
+
+    _mapSkills = (skills) => {
+        return skills.map((skill)=>{
+            return(
+                <span key={skill} className="jobSkill">{skill}</span>
+            );
+        });
+    }
+
     render () {
+        let skills = this._getSkills(this.props.skillsList);
         return (
             <div className="jobRow" onClick={this._toggle}>
                 <div className="jobCell jobDescription">
-                    <h3>{this.props.job.company}</h3>
+                    <div className="jobTitle">
+                        <h3>{this.props.job.company}</h3>
+                        {this._mapSkills(skills)}
+                    </div>
                     <h4>{this.props.job.title_fr}</h4>
                     <p className={"jobDetails " + ((this.state.open) ? "open" : "closed")}>{this.props.job.description_fr}</p>
                     <div className="info">

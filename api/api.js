@@ -77,6 +77,14 @@ router.post('/ja/search/', (req, res) => {
 });
 
 //
+// POST /api/ja/skills/similar
+// Process text query
+//
+router.post('/ja/skills/similar', (req, res) => {
+    postJson('/api/skills/similar', req, res);
+});
+
+//
 // POST /api/ja/coords/search
 // Process text query
 //

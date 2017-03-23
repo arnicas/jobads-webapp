@@ -49,9 +49,10 @@ export default class ResultScreen extends React.Component {
             list: list,
             mapFiltering : {enable: false, from: 'map'},
             refreshMapKey : 0,
-            skillsPanel: false,
+            skillsPanel: true, //TOCHANGE
             isInfiniteLoading: false,
             error: 0,
+            skillsList: []
         };
     }
 
@@ -100,7 +101,7 @@ export default class ResultScreen extends React.Component {
         }
         return jobs_.map((job)=>{
             return (
-                <Item key={job.id} job={job}/>
+                <Item key={job.id} job={job} skillsList={this.state.skillsList}/>
             );
         });
     }
@@ -153,6 +154,10 @@ export default class ResultScreen extends React.Component {
             console.log(err);
             this.setState({isInfiniteLoading: false, error: err});
         });
+    }
+
+    _handleSkillsSearching = (skillsList) => {
+        this.setState({skillsList});
     }
 
     render () {
@@ -218,7 +223,7 @@ export default class ResultScreen extends React.Component {
                 <FilterBar filter={this.props.filter} open={this.state.open} handleClose={this._toggleFilterBar} handleMapFilter={this._handleMapFilter} mode={this.state.value} handleChange={this.props.handleFilterChange}/>
                 <div className="jobOutter">
                     {resultView}
-                    <SkillPanel open={this.state.skillsPanel} mode={this.state.value}/>
+                    <SkillPanel open={this.state.skillsPanel} mode={this.state.value} setSkillsSearch={this._handleSkillsSearching}/>
                 </div>
                 {this.state.error !== 0 &&
                     <Snackbar
