@@ -49,7 +49,7 @@ export default class ResultScreen extends React.Component {
             list: list,
             mapFiltering : {enable: false, from: 'map'},
             refreshMapKey : 0,
-            skillsPanel: true, //TOCHANGE
+            skillsPanel: false,
             isInfiniteLoading: false,
             error: 0,
             skillsList: []
