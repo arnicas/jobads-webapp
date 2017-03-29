@@ -68,6 +68,7 @@ export default class SearchScreen extends React.Component {
     _handleTextFieldKeyDown = event => {
         switch (event.key) {
             case 'Enter':
+                this.textInput.handleInputBlur(event);
                 this.props.onSendClick();
                 break;
         }
@@ -105,6 +106,7 @@ export default class SearchScreen extends React.Component {
                             onBlur={()=>this._handleFocus(false)}
                             onChange={this._onTextInput}
                             onKeyDown={this._handleTextFieldKeyDown}
+                            ref={(input) => { this.textInput = input; }}
                         />
                         {this.props.waiting &&
                             <LinearProgress mode="indeterminate" className={"waitingIndicator" + (this.props.showResult ? ' allWidth' : '')} color={greenA200}/>
