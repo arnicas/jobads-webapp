@@ -1,7 +1,11 @@
 .skillsList {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
 
     .skillChip {
         margin: 6px !important;
+        display: inline-flex !important;
         
         span {
             color: white !important;

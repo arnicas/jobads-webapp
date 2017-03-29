@@ -39,6 +39,45 @@ body {
 
     &>div {
         height: 100vh !important;
+        overflow: hidden !important;
+    }
+
+    .drawerContent {
+        width: 200%;
+        display: flex;
+        flex-flow: row nowrap;
+        transition: .3s cubic-bezier(0.4, 0.0, 0.2, 1);
+
+        svg {
+            fill: initial !important;
+        }
+
+        &.a-propos {
+            transform: translateX(-50%);
+        }
+
+        .drawerTabContent {
+            flex: 0 0 50%;
+            padding: 16px;
+            box-sizing: border-box;
+
+            .fakeButton {
+                display: inline-block;
+                line-height: 36px;
+                height: 36px;
+                border-radius: 2px;
+                position: relative;
+                padding-left: 16px;
+                padding-right: 16px;
+                vertical-align: middle;
+                letter-spacing: 0px;
+                text-transform: uppercase;
+                font-weight: 500;
+                font-size: 14px;
+                color: #666666;
+                background: rgba(153,153,153,.2);
+            }
+        }
     }
 }
 
