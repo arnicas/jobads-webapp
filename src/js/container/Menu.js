@@ -14,6 +14,8 @@ import { hashHistory } from 'react-router';
 import LogoIcon from './Logo';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import Help from 'material-ui/svg-icons/communication/live-help';
+import Github from 'mdi-svg/d/github';
+import SvgIcon from 'material-ui/SvgIcon';
 
 const styles = {
   tabItemContainer : {
@@ -201,6 +203,37 @@ export default class Menu extends React.Component {
                 onLeftIconButtonTouchTap={handleClose}
                 style={{background: "white"}}
                 />
+                <div className={"drawerContent "+this.state.altLocation}>
+                    <div className="drawerTabContent">
+                        <h3>Aide</h3>
+                        <p>L'application JobApp vous permet de <b>trouver des offres de stage ou d'emploi</b> et vous offre des <b>outils d'analyse de compétences</b></p>
+                        <p>Lancez votre recherche, puis via le panneau <span className="fakeButton">Compétences</span> importez votre CV ou ajoutez manuellement votre CV et laissez nos algorithmes travailler !</p>
+                        <p>Vous obtiendrez alors :</p>
+                        <ul>
+                            <li>La liste des offres correspondant à votre profil</li>
+                            <li>La liste des compétences attendues pour ces offres</li>
+                        </ul>
+                        <p>Vous avez égalment la possibilité de filtrer les résultats via le panneau <span className="fakeButton">Filtres</span>.</p>
+                        <p> Les offres qui correspondent à votre profil peuvent être <b>affichées sous forme de liste ou réparties sur une carte de France </b> pour faciliter une recherche selon des critères géographiques.</p>
+                    </div>
+                    <div className="drawerTabContent">
+                        <h3>A propos</h3>
+                        <p>Cette application a été développée par une équipe mixte de l'École Centrale de Lyon et emlyon business school dans le cadre d'un projet de fin d'étude.</p>
+                        <p>Les données sont fournies et utilisées dans un but pédagogique.</p>
+                        <p>Les documents de développement sont stockés sur deux <i>repositories</i> Github publics accessibles via les boutons ci-après.</p>
+                        <IconButton href="https://github.com/tpucci/jobads-webapp">
+                            <SvgIcon color={"black"}>
+                                <path d={Github} />
+                            </SvgIcon>
+                        </IconButton>
+                        <IconButton href="https://github.com/yannvgn/jobads-textminer">
+                            <SvgIcon color={"black"}>
+                                <path d={Github} />
+                            </SvgIcon>
+                        </IconButton>
+                        <p>Nous vous informons que les données de votre CV ne sont pas collectées : elles sont temporairement conservées par l’app de manière à en extraire les compétences et vous proposer une analyse de ces dernières.</p>
+                    </div>
+                </div>
           </Drawer>
         </AppBar>
       </div>

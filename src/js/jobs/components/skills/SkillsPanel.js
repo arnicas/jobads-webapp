@@ -55,7 +55,6 @@ export default class SkillsPanel extends React.Component {
             openDocPopover : false,
             skillsOwned : [],
             skillsDismissed: [],
-            skillsSuggested: [{key:"e", label:"testSug1", origin: "suggested"}, {key:"f", label:"testSug2", origin: "suggested"}],
             addSkillField : "",
         };
     }
@@ -110,14 +109,6 @@ export default class SkillsPanel extends React.Component {
         this.setState({skillsOwned: this.skillsOwned, skillsDismissed: this.skillsDismissed});
         if (this.skillsDismissed.length == 0) this.setState({openDeletedPopover: false});
         this.props.setSkillsSearch(this.skillsOwned.map((skill)=>{return skill.label}));
-    }
-
-    _handleRequestSkillsSuggestedDelete = (key) => {
-        this.skillsSuggested = this.state.skillsSuggested;
-        this.skillsDismissed = this.state.skillsDismissed;
-        const skillToDelete = this.skillsSuggested.map((skill) => skill.key).indexOf(key);
-        this.skillsDismissed.push(this.skillsSuggested.splice(skillToDelete, 1)[0]);
-        this.setState({skillsSuggested: this.skillsSuggested, skillsDismissed: this.skillsDismissed});
     }
 
     _handleAddSuggestedSkill = (e) => {
@@ -221,8 +212,7 @@ export default class SkillsPanel extends React.Component {
 
     _handleDeleteAllOwned = () => {
         let originIsNotOwned = (skill) => {return (skill.origin !== "owned");};
-        this.setState({skillsSuggested: this.state.skillsSuggested.filter(originIsNotOwned),
-            skillsOwned: this.state.skillsOwned.filter(originIsNotOwned),
+        this.setState({skillsOwned: this.state.skillsOwned.filter(originIsNotOwned),
             skillsDismissed: this.state.skillsDismissed.filter(originIsNotOwned),
             openDocPopover:false});
             
@@ -278,8 +268,8 @@ export default class SkillsPanel extends React.Component {
                             <h3>Filtre par compétences</h3>
                             <div>
                                 {(this.state.hasFile && !this.state.waiting) &&
-                                    <IconButton className="doc" tooltip={"Fichier analysé : " + filename + " (" + formatOctet(size) + ")" } tooltipPosition="bottom-left">
-                                        <ActionDoc color={grey900} onTouchTap={this._handleTouchTapOnDocIcon}/>
+                                    <IconButton className="doc" tooltip={"Fichier analysé : " + filename + " (" + formatOctet(size) + ")" } tooltipPosition="bottom-left" onTouchTap={this._handleTouchTapOnDocIcon}>
+                                        <ActionDoc color={grey900}/>
                                     </IconButton>
                                 }
                                 { this.state.skillsDismissed.length>0 &&
@@ -289,8 +279,8 @@ export default class SkillsPanel extends React.Component {
                                     secondary={true}
                                     badgeStyle={{top: -8, right: -8}}
                                     >
-                                        <IconButton>
-                                            <DeleteIcon color={grey900} onTouchTap={this._handleTouchTapOnDeleteIcon}/>
+                                        <IconButton onTouchTap={this._handleTouchTapOnDeleteIcon}>
+                                            <DeleteIcon color={grey900}/>
                                         </IconButton>
                                     </Badge>
                                 }

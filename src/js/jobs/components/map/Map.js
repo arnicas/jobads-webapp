@@ -170,19 +170,9 @@ export default class Map extends React.Component {
     _onChildClick = (key, childProps) => {
         const markerId = childProps.marker.points[0].id;
         this.setState({center: {lat: childProps.marker.wy, lng: childProps.marker.wx}});
-        if (window.event.ctrlKey) {
-            let currentSelectedIds = this.state.selectedIds;
-            let index = currentSelectedIds.indexOf(markerId);
-            let nextSelectedIds = new Set(currentSelectedIds);
-            childProps.marker.points.map((point)=>{
-                if (!nextSelectedIds.delete(point.id)) {nextSelectedIds.add(point.id)}
-            });
-            this.setState({selectedIds: Array.from(nextSelectedIds)});
-        } else {
-            let selectedIds = [];
-            childProps.marker.points.map((point)=>{selectedIds.push(point.id)});
-            this.setState({selectedIds});
-        }
+        let selectedIds = [];
+        childProps.marker.points.map((point)=>{selectedIds.push(point.id)});
+        this.setState({selectedIds});
     }
 
     render() {
