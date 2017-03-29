@@ -32,6 +32,8 @@ body {
     z-index: 1100;
 
     .drawerAppBar {
+        flex: 0 0 64px;
+
         svg {
             fill: $gris300 !important;
         }
@@ -40,9 +42,12 @@ body {
     &>div {
         height: 100vh !important;
         overflow: hidden !important;
+        display: flex;
+        flex-flow: column;
     }
 
     .drawerContent {
+        flex: 1 0 0;
         width: 200%;
         display: flex;
         flex-flow: row nowrap;
@@ -60,6 +65,7 @@ body {
             flex: 0 0 50%;
             padding: 16px;
             box-sizing: border-box;
+            overflow-y: scroll;
 
             .fakeButton {
                 display: inline-block;
