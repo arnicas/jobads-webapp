@@ -8,7 +8,7 @@ let upload = multer({limits: {fileSize: 2000000}});
 let postJson = (path, req, res) => {
     var postData = JSON.stringify(req.body);
     let options = {
-        hostname: 'jobads-textminer.herokuapp.com',
+        hostname: 'jobmatch-api.herokuapp.com',
         path: path,
         method: 'POST',
         headers: {
@@ -106,7 +106,7 @@ router.post('/ja/get_basic_info', (req, res) => {
 //
 router.get('/ja/get/:id', (req, res) => {
     let options = {
-        hostname: 'jobads-textminer.herokuapp.com',
+        hostname: 'jobmatch-api.herokuapp.com',
         path: '/api/ads/get/'+req.params.id,
         method: 'GET',
         agent: false,
